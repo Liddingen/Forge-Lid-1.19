@@ -1,6 +1,7 @@
 package net.liddingen.lidmod;
 
 import com.mojang.logging.LogUtils;
+import net.liddingen.lidmod.block.ModBlocks;
 import net.liddingen.lidmod.item.ModItems;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -21,6 +22,7 @@ public class LidMod {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
         ModItems.register(modEventBus);
+        ModBlocks.register(modEventBus);
 
         modEventBus.addListener(this::commonSetup);
 
