@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:smelting",
+  "cookingtime": 200,
+  "experience": 3.0,
+  "group": "elektrum",
+  "ingredient": {
+    "item": "lidmod:elektrum_ore"
+  },
+  "result": {
+    "count": 2,
+    "item": "lidmod:elektrum"
+  }
+}

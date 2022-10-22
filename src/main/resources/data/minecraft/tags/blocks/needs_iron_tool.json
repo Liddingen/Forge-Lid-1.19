@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "lidmod:elektrum_ore",
+    "lidmod:deepslate_elektrum_ore",
+    "lidmod:elektrum_block"
+  ]
+}

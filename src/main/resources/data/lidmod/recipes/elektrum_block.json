@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "lidmod:elektrum"
+    }
+  },
+  "result": {
+    "item": "lidmod:elektrum_block"
+  }
+}
