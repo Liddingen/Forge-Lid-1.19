@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "#": {
+      "item": "lidmod:elektrum_fiber"
+    },
+    "B": {
+      "item": "minecraft:redstone_lamp"
+    },
+    "D": {
+      "item": "minecraft:lever"
+    }
+  },
+  "pattern": [
+    " D ",
+    "#B#",
+    " # "
+  ],
+  "result": {
+    "item": "lidmod:toggleable_redstone_lamp"
+  }
+}

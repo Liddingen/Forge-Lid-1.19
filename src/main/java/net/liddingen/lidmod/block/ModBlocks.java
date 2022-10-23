@@ -1,6 +1,8 @@
 package net.liddingen.lidmod.block;
 
 import net.liddingen.lidmod.LidMod; //
+import net.liddingen.lidmod.block.custom.Charger;
+import net.liddingen.lidmod.block.custom.ToggleableRedstoneLampBlock;
 import net.liddingen.lidmod.item.ModCreativeModeTab;
 import net.liddingen.lidmod.item.ModItems;
 import net.minecraft.util.valueproviders.UniformInt;
@@ -24,7 +26,7 @@ public static final DeferredRegister<Block> BLOCKS =
         DeferredRegister.create(ForgeRegistries.BLOCKS, LidMod.MOD_ID);
 
 public static final RegistryObject<Block> ELEKTRUM_BLOCK = registerBlock("elektrum_block",
-        () -> new Block(BlockBehaviour.Properties.of(Material.STONE)
+        () -> new Block(BlockBehaviour.Properties.of(Material.METAL)
                 .strength(5f).requiresCorrectToolForDrops()), ModCreativeModeTab.LID_TAB);
 
 
@@ -37,6 +39,15 @@ public static final RegistryObject<Block> ELEKTRUM_BLOCK = registerBlock("elektr
             () -> new DropExperienceBlock(BlockBehaviour.Properties.of(Material.STONE)
                     .strength(7f).requiresCorrectToolForDrops(),
                     UniformInt.of(3, 7)), ModCreativeModeTab.LID_TAB);
+
+    public static final RegistryObject<Block> CHARGER = registerBlock("charger",
+            () -> new Charger(BlockBehaviour.Properties.of(Material.METAL)
+                    .strength(5f).requiresCorrectToolForDrops()), ModCreativeModeTab.LID_TAB);
+
+    public static final RegistryObject<Block> TOGGLEABLE_REDSTONE_LAMP = registerBlock("toggleable_redstone_lamp",
+            () -> new ToggleableRedstoneLampBlock(BlockBehaviour.Properties.of(Material.GLASS)
+                    .strength(5f).requiresCorrectToolForDrops()
+                    .lightLevel(state -> state.getValue(ToggleableRedstoneLampBlock.LIT) ? 15 : 0)), ModCreativeModeTab.LID_TAB);
 
 
 

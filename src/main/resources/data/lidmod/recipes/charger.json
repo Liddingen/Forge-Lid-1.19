@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "#": {
+      "item": "lidmod:elektrum_fiber"
+    },
+    "B": {
+      "item": "minecraft:brewing_stand"
+    },
+    "D": {
+      "item": "minecraft:smooth_stone_slab"
+    }
+  },
+  "pattern": [
+    " D ",
+    "#B#",
+    " D "
+  ],
+  "result": {
+    "item": "lidmod:charger"
+  }
+}

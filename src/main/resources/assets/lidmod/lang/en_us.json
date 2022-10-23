@@ -1,10 +1,14 @@
 {
   "item.lidmod.elektrum": "Elektrum",
   "item.lidmod.raw_elektrum": "Raw Elektrum",
+  "item.lidmod.elektrum_fiber": "Elektrum Fiber",
 
   "block.lidmod.elektrum_block": "Block of Elektrum",
   "block.lidmod.elektrum_ore": "Elektrum Ore",
   "block.lidmod.deepslate_elektrum_ore": "Deepslate Elektrum Ore",
+
+  "block.lidmod.charger": "Charger",
+  "block.lidmod.toggleable_redstone_lamp": "Toggleable Redstone Lamp",
 
   "itemGroup.lidtab": "LID Mod"
 }

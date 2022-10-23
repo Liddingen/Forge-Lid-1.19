@@ -1,0 +1,6 @@
+{
+  "parent": "block/cube_all",
+  "textures": {
+    "all": "lidmod:block/toggleable_redstone_lamp_on"
+  }
+}
