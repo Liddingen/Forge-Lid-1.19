@@ -3,6 +3,8 @@ package net.liddingen.lidmod;
 import com.mojang.logging.LogUtils;
 import net.liddingen.lidmod.block.ModBlocks;
 import net.liddingen.lidmod.item.ModItems;
+import net.liddingen.lidmod.world.feature.ModConfiguredFeatures;
+import net.liddingen.lidmod.world.feature.ModPlacedFeatures;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -24,7 +26,12 @@ public class LidMod {
         ModItems.register(modEventBus);
         ModBlocks.register(modEventBus);
 
+        ModConfiguredFeatures.register(modEventBus);
+        ModPlacedFeatures.register(modEventBus);
+
         modEventBus.addListener(this::commonSetup);
+
+
 
         MinecraftForge.EVENT_BUS.register(this);
     }
