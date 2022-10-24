@@ -3,9 +3,12 @@ package net.liddingen.lidmod;
 import com.mojang.logging.LogUtils;
 import net.liddingen.lidmod.block.ModBlocks;
 import net.liddingen.lidmod.item.ModItems;
+import net.liddingen.lidmod.villager.ModVillagers;
 import net.liddingen.lidmod.world.feature.ModConfiguredFeatures;
 import net.liddingen.lidmod.world.feature.ModPlacedFeatures;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -29,15 +32,17 @@ public class LidMod {
         ModConfiguredFeatures.register(modEventBus);
         ModPlacedFeatures.register(modEventBus);
 
+        ModVillagers.register(modEventBus);
+
         modEventBus.addListener(this::commonSetup);
-
-
 
         MinecraftForge.EVENT_BUS.register(this);
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
-
+        event.enqueueWork(() -> {
+            ModVillagers.registerPOIs();
+        });
     }
 
     // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent

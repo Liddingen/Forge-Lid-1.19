@@ -6,9 +6,11 @@
   "block.lidmod.elektrum_block": "Block of Elektrum",
   "block.lidmod.elektrum_ore": "Elektrum Ore",
   "block.lidmod.deepslate_elektrum_ore": "Deepslate Elektrum Ore",
-
   "block.lidmod.charger": "Charger",
   "block.lidmod.toggleable_redstone_lamp": "Toggleable Redstone Lamp",
+  "block.lidmod.chase_block": "Chase Table",
+
+  "entity.minecraft.villager.lidmod.rageful_revenger": "Rageful Revenger",
 
   "itemGroup.lidtab": "LID Mod"
 }

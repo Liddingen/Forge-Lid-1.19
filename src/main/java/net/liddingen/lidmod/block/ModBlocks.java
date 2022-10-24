@@ -44,6 +44,10 @@ public static final RegistryObject<Block> ELEKTRUM_BLOCK = registerBlock("elektr
             () -> new Charger(BlockBehaviour.Properties.of(Material.METAL)
                     .strength(5f).requiresCorrectToolForDrops()), ModCreativeModeTab.LID_TAB);
 
+    public static final RegistryObject<Block> CHASE_BLOCK = registerBlock("chase_block",
+            () -> new Block(BlockBehaviour.Properties.of(Material.NETHER_WOOD)
+                    .strength(5f).requiresCorrectToolForDrops()), ModCreativeModeTab.LID_TAB);
+
     public static final RegistryObject<Block> TOGGLEABLE_REDSTONE_LAMP = registerBlock("toggleable_redstone_lamp",
             () -> new ToggleableRedstoneLampBlock(BlockBehaviour.Properties.of(Material.GLASS)
                     .strength(5f).requiresCorrectToolForDrops()
