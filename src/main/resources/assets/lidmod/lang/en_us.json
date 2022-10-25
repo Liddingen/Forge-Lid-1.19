@@ -2,6 +2,8 @@
   "item.lidmod.elektrum": "Elektrum",
   "item.lidmod.raw_elektrum": "Raw Elektrum",
   "item.lidmod.elektrum_fiber": "Elektrum Fiber",
+  "item.lidmod.instruction_paper": "Instruction",
+  "item.lidmod.instruction_paper_two": "Second Instruction",
 
   "block.lidmod.elektrum_block": "Block of Elektrum",
   "block.lidmod.elektrum_ore": "Elektrum Ore",
