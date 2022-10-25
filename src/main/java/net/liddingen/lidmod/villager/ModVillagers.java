@@ -1,3 +1,5 @@
+
+
 package net.liddingen.lidmod.villager;
 
 import com.google.common.collect.ImmutableSet;
@@ -30,7 +32,6 @@ public static final RegistryObject<VillagerProfession> RAGEFUL_REVENGER = VILLAG
                 SoundEvents.VILLAGER_WORK_CARTOGRAPHER));
 
 
-
     public static void registerPOIs() {
         try {
             ObfuscationReflectionHelper.findMethod(PoiType.class,
@@ -39,7 +40,6 @@ public static final RegistryObject<VillagerProfession> RAGEFUL_REVENGER = VILLAG
             exception.printStackTrace();
         }
     }
-
 
     public static void register(IEventBus eventBus) {
         POI_TYPES.register(eventBus);
