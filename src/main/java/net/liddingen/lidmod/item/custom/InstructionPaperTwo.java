@@ -27,7 +27,7 @@ public class InstructionPaperTwo extends Item {
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         if (!level.isClientSide() && hand == InteractionHand.MAIN_HAND) {
             outputRandomInstructionTwo(player);
-            player.getCooldowns().addCooldown(this, 1000);
+            player.getCooldowns().addCooldown(this, 100);
             level.playSound(null, player.getOnPos(), SoundEvents.VILLAGER_WORK_CARTOGRAPHER, SoundSource.PLAYERS,
                     0.5F, level.random.nextFloat() * 0.1F + 0.9F);
 
