@@ -1,6 +1,6 @@
 {
   "variants": {
-    "lit=true": { "model":  "lidmod:block/toggleable_redstone_lamp_off" },
-    "lit=false": { "model":  "lidmod:block/toggleable_redstone_lamp_on" }
+    "lit=true": { "model":  "lidmod:block/toggleable_redstone_lamp_on" },
+    "lit=false": { "model":  "lidmod:block/toggleable_redstone_lamp_off" }
   }
 }

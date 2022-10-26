@@ -2,8 +2,13 @@
   "item.lidmod.elektrum": "Elektrum",
   "item.lidmod.raw_elektrum": "Raw Elektrum",
   "item.lidmod.elektrum_fiber": "Elektrum Fiber",
+  "item.lidmod.elektrum_cell": "Elektrum Cell",
   "item.lidmod.instruction_paper": "Instruction",
+  "item.lidmod.thunder_jug": "Thunder Jug",
+
   "item.lidmod.instruction_paper_two": "Second Instruction",
+  "item.lidmod.instruction_paper_three": "Third Instruction",
+  "item.lidmod.instruction_paper_four": "Final Instruction",
 
   "block.lidmod.elektrum_block": "Block of Elektrum",
   "block.lidmod.elektrum_ore": "Elektrum Ore",

@@ -3,6 +3,7 @@ package net.liddingen.lidmod;
 import com.mojang.logging.LogUtils;
 import net.liddingen.lidmod.block.ModBlocks;
 import net.liddingen.lidmod.item.ModItems;
+import net.liddingen.lidmod.painting.ModPaintings;
 import net.liddingen.lidmod.villager.ModVillagers;
 import net.liddingen.lidmod.world.feature.ModConfiguredFeatures;
 import net.liddingen.lidmod.world.feature.ModPlacedFeatures;
@@ -28,6 +29,7 @@ public class LidMod {
 
         ModItems.register(modEventBus);
         ModBlocks.register(modEventBus);
+        ModPaintings.register(modEventBus);
 
         ModConfiguredFeatures.register(modEventBus);
         ModPlacedFeatures.register(modEventBus);

@@ -2,6 +2,8 @@ package net.liddingen.lidmod.item;
 
 import net.liddingen.lidmod.LidMod;
 import net.liddingen.lidmod.item.custom.InstructionPaper;
+import net.liddingen.lidmod.item.custom.InstructionPaperFour;
+import net.liddingen.lidmod.item.custom.InstructionPaperThree;
 import net.liddingen.lidmod.item.custom.InstructionPaperTwo;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -20,10 +22,19 @@ public class ModItems {
             () -> new Item(new Item.Properties().tab(ModCreativeModeTab.LID_TAB)));
     public static final RegistryObject<Item> ELEKTRUM_FIBER = ITEMS.register("elektrum_fiber",
             () -> new Item(new Item.Properties().tab(ModCreativeModeTab.LID_TAB)));
+    public static final RegistryObject<Item> THUNDER_JUG = ITEMS.register("thunder_jug",
+            () -> new Item(new Item.Properties().tab(ModCreativeModeTab.LID_TAB).stacksTo(16)));
+    public static final RegistryObject<Item> ELEKTRUM_CELL = ITEMS.register("elektrum_cell",
+            () -> new Item(new Item.Properties().tab(ModCreativeModeTab.LID_TAB)));
+
     public static final RegistryObject<Item> INSTRUCTION_PAPER = ITEMS.register("instruction_paper",
             () -> new InstructionPaper(new Item.Properties().tab(ModCreativeModeTab.LID_TAB).stacksTo(1)));
     public static final RegistryObject<Item> INSTRUCTION_PAPER_TWO = ITEMS.register("instruction_paper_two",
             () -> new InstructionPaperTwo(new Item.Properties().tab(ModCreativeModeTab.LID_TAB).stacksTo(1)));
+    public static final RegistryObject<Item> INSTRUCTION_PAPER_THREE = ITEMS.register("instruction_paper_three",
+            () -> new InstructionPaperThree(new Item.Properties().tab(ModCreativeModeTab.LID_TAB).stacksTo(1)));
+    public static final RegistryObject<Item> INSTRUCTION_PAPER_FOUR = ITEMS.register("instruction_paper_four",
+            () -> new InstructionPaperFour(new Item.Properties().tab(ModCreativeModeTab.LID_TAB).stacksTo(1)));
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);
