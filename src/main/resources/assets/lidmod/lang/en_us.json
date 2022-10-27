@@ -16,6 +16,9 @@
   "block.lidmod.charger": "Charger",
   "block.lidmod.toggleable_redstone_lamp": "Toggleable Redstone Lamp",
   "block.lidmod.chase_block": "Chase Table",
+  "block.lidmod.netherite_frame": "Netherite Frame",
+  "block.lidmod.accumulator": "Accumulator",
+
 
   "entity.minecraft.villager.lidmod.rageful_revenger": "Rageful Revenger",
 

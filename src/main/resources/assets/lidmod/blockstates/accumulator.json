@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model":  "lidmod:block/accumulator"
+    },
+    "facing=south": {
+      "model":  "lidmod:block/accumulator",
+      "y": 180
+    },
+    "facing=west": {
+      "model":  "lidmod:block/accumulator",
+      "y": 270
+    },
+    "facing=east": {
+      "model":  "lidmod:block/accumulator",
+      "y": 90
+    }
+  }
+}

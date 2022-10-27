@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "#": {
+      "item": "lidmod:elektrum"
+    },
+    "B": {
+      "item": "lidmod:elektrum_cell"
+    },
+    "D": {
+      "item": "lidmod:netherite_frame"
+    }
+  },
+  "pattern": [
+    "#B#",
+    "BDB",
+    "#B#"
+  ],
+  "result": {
+    "item": "lidmod:accumulator"
+  }
+}

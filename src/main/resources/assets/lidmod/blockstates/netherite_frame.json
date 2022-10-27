@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model":  "lidmod:block/netherite_frame"
+    },
+    "facing=south": {
+      "model":  "lidmod:block/netherite_frame",
+      "y": 180
+    },
+    "facing=west": {
+      "model":  "lidmod:block/netherite_frame",
+      "y": 270
+    },
+    "facing=east": {
+      "model":  "lidmod:block/netherite_frame",
+      "y": 90
+    }
+  }
+}

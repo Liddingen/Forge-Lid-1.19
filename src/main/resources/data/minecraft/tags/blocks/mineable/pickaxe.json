@@ -3,6 +3,8 @@
   "values": [
   "lidmod:elektrum_ore",
   "lidmod:deepslate_elektrum_ore",
-  "lidmod:elektrum_block"
+  "lidmod:elektrum_block",
+  "lidmod:netherite_frame",
+  "lidmod:accumulator"
   ]
 }

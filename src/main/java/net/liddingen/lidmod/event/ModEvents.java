@@ -87,7 +87,7 @@ public class ModEvents {
 
         if(event.getType() == ModVillagers.RAGEFUL_REVENGER.get()) {
             Int2ObjectMap<List<VillagerTrades.ItemListing>> trades = event.getTrades();
-            ItemStack stack = new ItemStack(ModItems.RAW_ELEKTRUM.get(), 1);
+            ItemStack stack = new ItemStack(ModBlocks.NETHERITE_FRAME.get(), 1);
             int villagerLevel = 3;
 
             trades.get(villagerLevel).add((trader, rand) -> new MerchantOffer(

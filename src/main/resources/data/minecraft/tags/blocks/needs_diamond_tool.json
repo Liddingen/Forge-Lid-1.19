@@ -1,6 +1,8 @@
 {
   "replace": false,
   "values": [
-
+    "lidmod:chase_block",
+    "lidmod:netherite_frame",
+    "lidmod:accumulator"
   ]
 }

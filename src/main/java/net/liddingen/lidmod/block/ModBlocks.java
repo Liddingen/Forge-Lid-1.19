@@ -1,7 +1,9 @@
 package net.liddingen.lidmod.block;
 
 import net.liddingen.lidmod.LidMod; //
+import net.liddingen.lidmod.block.custom.Accumulator;
 import net.liddingen.lidmod.block.custom.Charger;
+import net.liddingen.lidmod.block.custom.NetheriteFrame;
 import net.liddingen.lidmod.block.custom.ToggleableRedstoneLampBlock;
 import net.liddingen.lidmod.item.ModCreativeModeTab;
 import net.liddingen.lidmod.item.ModItems;
@@ -40,18 +42,28 @@ public static final RegistryObject<Block> ELEKTRUM_BLOCK = registerBlock("elektr
                     .strength(7f).requiresCorrectToolForDrops(),
                     UniformInt.of(3, 7)), ModCreativeModeTab.LID_TAB);
 
-    public static final RegistryObject<Block> CHARGER = registerBlock("charger",
-            () -> new Charger(BlockBehaviour.Properties.of(Material.METAL)
-                    .strength(5f).requiresCorrectToolForDrops()), ModCreativeModeTab.LID_TAB);
-
     public static final RegistryObject<Block> CHASE_BLOCK = registerBlock("chase_block",
             () -> new Block(BlockBehaviour.Properties.of(Material.NETHER_WOOD)
                     .strength(5f).requiresCorrectToolForDrops()), ModCreativeModeTab.LID_TAB);
+
+//Custom blocks
+public static final RegistryObject<Block> CHARGER = registerBlock("charger",
+        () -> new Charger(BlockBehaviour.Properties.of(Material.METAL)
+                .strength(5f).requiresCorrectToolForDrops()), ModCreativeModeTab.LID_TAB);
 
     public static final RegistryObject<Block> TOGGLEABLE_REDSTONE_LAMP = registerBlock("toggleable_redstone_lamp",
             () -> new ToggleableRedstoneLampBlock(BlockBehaviour.Properties.of(Material.GLASS)
                     .strength(5f).requiresCorrectToolForDrops()
                     .lightLevel(state -> state.getValue(ToggleableRedstoneLampBlock.LIT) ? 15 : 0)), ModCreativeModeTab.LID_TAB);
+
+//3D Models
+    public static final RegistryObject<Block> NETHERITE_FRAME = registerBlock("netherite_frame",
+            () -> new NetheriteFrame(BlockBehaviour.Properties.of(Material.METAL)
+                    .strength(5f).requiresCorrectToolForDrops().noOcclusion()), ModCreativeModeTab.LID_TAB);
+
+    public static final RegistryObject<Block> ACCUMULATOR = registerBlock("accumulator",
+            () -> new Accumulator(BlockBehaviour.Properties.of(Material.METAL)
+                    .strength(5f).requiresCorrectToolForDrops().noOcclusion()), ModCreativeModeTab.LID_TAB);
 
 
 
