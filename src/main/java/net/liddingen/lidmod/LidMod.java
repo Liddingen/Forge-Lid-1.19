@@ -2,14 +2,14 @@ package net.liddingen.lidmod;
 
 import com.mojang.logging.LogUtils;
 import net.liddingen.lidmod.block.ModBlocks;
+import net.liddingen.lidmod.block.entity.ModBlockEntities;
 import net.liddingen.lidmod.item.ModItems;
+import net.liddingen.lidmod.menu.Menu;
 import net.liddingen.lidmod.painting.ModPaintings;
 import net.liddingen.lidmod.villager.ModVillagers;
 import net.liddingen.lidmod.world.feature.ModConfiguredFeatures;
 import net.liddingen.lidmod.world.feature.ModPlacedFeatures;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -35,6 +35,8 @@ public class LidMod {
         ModPlacedFeatures.register(modEventBus);
 
         ModVillagers.register(modEventBus);
+        ModBlockEntities.register(modEventBus);
+        Menu.register(modEventBus);
 
         modEventBus.addListener(this::commonSetup);
 
