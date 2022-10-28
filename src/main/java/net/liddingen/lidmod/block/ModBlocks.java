@@ -1,10 +1,7 @@
 package net.liddingen.lidmod.block;
 
 import net.liddingen.lidmod.LidMod; //
-import net.liddingen.lidmod.block.custom.Accumulator;
-import net.liddingen.lidmod.block.custom.Charger;
-import net.liddingen.lidmod.block.custom.NetheriteFrame;
-import net.liddingen.lidmod.block.custom.ToggleableRedstoneLampBlock;
+import net.liddingen.lidmod.block.custom.*;
 import net.liddingen.lidmod.item.ModCreativeModeTab;
 import net.liddingen.lidmod.item.ModItems;
 import net.minecraft.util.valueproviders.UniformInt;
@@ -58,11 +55,15 @@ public static final RegistryObject<Block> CHARGER = registerBlock("charger",
 
 //3D Models
     public static final RegistryObject<Block> NETHERITE_FRAME = registerBlock("netherite_frame",
-            () -> new NetheriteFrame(BlockBehaviour.Properties.of(Material.METAL)
-                    .strength(5f).requiresCorrectToolForDrops().noOcclusion()), ModCreativeModeTab.LID_TAB);
+            () -> new NetheriteFrame(BlockBehaviour.Properties.of(Material.HEAVY_METAL)
+                    .strength(7f).requiresCorrectToolForDrops().noOcclusion()), ModCreativeModeTab.LID_TAB);
 
     public static final RegistryObject<Block> ACCUMULATOR = registerBlock("accumulator",
-            () -> new Accumulator(BlockBehaviour.Properties.of(Material.METAL)
+            () -> new Accumulator(BlockBehaviour.Properties.of(Material.HEAVY_METAL)
+                    .strength(7f).requiresCorrectToolForDrops().noOcclusion()), ModCreativeModeTab.LID_TAB);
+
+    public static final RegistryObject<Block> TRANSFORMER = registerBlock("transformer",
+            () -> new Transformer(BlockBehaviour.Properties.of(Material.HEAVY_METAL)
                     .strength(5f).requiresCorrectToolForDrops().noOcclusion()), ModCreativeModeTab.LID_TAB);
 
 

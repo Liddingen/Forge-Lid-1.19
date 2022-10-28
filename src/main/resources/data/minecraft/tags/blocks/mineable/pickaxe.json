@@ -5,6 +5,7 @@
   "lidmod:deepslate_elektrum_ore",
   "lidmod:elektrum_block",
   "lidmod:netherite_frame",
-  "lidmod:accumulator"
+  "lidmod:accumulator",
+    "lidmod:transformer"
   ]
 }

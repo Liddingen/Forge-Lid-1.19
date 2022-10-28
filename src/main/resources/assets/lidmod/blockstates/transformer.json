@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model":  "lidmod:block/transformer"
+    },
+    "facing=south": {
+      "model":  "lidmod:block/transformer",
+      "y": 180
+    },
+    "facing=west": {
+      "model":  "lidmod:block/transformer",
+      "y": 270
+    },
+    "facing=east": {
+      "model":  "lidmod:block/transformer",
+      "y": 90
+    }
+  }
+}
