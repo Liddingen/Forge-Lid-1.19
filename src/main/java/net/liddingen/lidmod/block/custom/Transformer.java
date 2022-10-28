@@ -22,7 +22,7 @@ public class Transformer extends HorizontalDirectionalBlock {
     }
 
     private static final VoxelShape SHAPE =
-            Block.box(2, 0, 2, 14, 11, 15);
+            Block.box(0, 0, 0, 16, 11, 16);
 
     @Override
     public VoxelShape getShape(BlockState p_60555_, BlockGetter p_60556_, BlockPos p_60557_, CollisionContext p_60558_) {
