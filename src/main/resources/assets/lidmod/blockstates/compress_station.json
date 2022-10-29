@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model":  "lidmod:block/compress_station"
+    },
+    "facing=south": {
+      "model":  "lidmod:block/compress_station",
+      "y": 180
+    },
+    "facing=west": {
+      "model":  "lidmod:block/compress_station",
+      "y": 270
+    },
+    "facing=east": {
+      "model":  "lidmod:block/compress_station",
+      "y": 90
+    }
+  }
+}

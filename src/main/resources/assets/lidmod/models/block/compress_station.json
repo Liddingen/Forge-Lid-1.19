@@ -1,0 +1,22 @@
+{
+	"credit": "Made with Blockbench",
+	"texture_size": [64, 64],
+	"textures": {
+		"0": "lidmod:block/compress_station",
+		"particle": "lidmod:block/compress_station"
+	},
+	"elements": [
+		{
+			"from": [1, 0, -16],
+			"to": [16, 15, 16],
+			"faces": {
+				"north": {"uv": [7.5, 7.5, 11.25, 11.25], "texture": "#0"},
+				"east": {"uv": [0, 0, 8, 3.75], "texture": "#0"},
+				"south": {"uv": [8, 0, 11.75, 3.75], "texture": "#0"},
+				"west": {"uv": [0, 3.75, 8, 7.5], "texture": "#0"},
+				"up": {"uv": [3.75, 15.5, 0, 7.5], "texture": "#0"},
+				"down": {"uv": [7.5, 7.5, 3.75, 15.5], "texture": "#0"}
+			}
+		}
+	]
+}

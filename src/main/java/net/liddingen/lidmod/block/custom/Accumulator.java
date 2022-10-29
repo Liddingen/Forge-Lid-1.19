@@ -17,6 +17,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 public class Accumulator extends HorizontalDirectionalBlock {
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 
+
     public Accumulator(Properties properties) {
         super(properties);
     }

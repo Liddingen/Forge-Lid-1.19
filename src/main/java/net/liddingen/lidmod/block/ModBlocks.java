@@ -7,9 +7,8 @@ import net.liddingen.lidmod.item.ModItems;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab; //
-import net.minecraft.world.level.block.Block; //
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.DropExperienceBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Material;
 import net.minecraftforge.eventbus.api.IEventBus; //
@@ -64,6 +63,10 @@ public static final RegistryObject<Block> CHARGER = registerBlock("charger",
 
     public static final RegistryObject<Block> TRANSFORMER = registerBlock("transformer",
             () -> new Transformer(BlockBehaviour.Properties.of(Material.HEAVY_METAL)
+                    .strength(5f).requiresCorrectToolForDrops().noOcclusion()), ModCreativeModeTab.LID_TAB);
+
+    public static final RegistryObject<Block> COMPRESS_STATION = registerBlock("compress_station",
+            () -> new CompressStation(BlockBehaviour.Properties.of(Material.HEAVY_METAL)
                     .strength(5f).requiresCorrectToolForDrops().noOcclusion()), ModCreativeModeTab.LID_TAB);
 
 
