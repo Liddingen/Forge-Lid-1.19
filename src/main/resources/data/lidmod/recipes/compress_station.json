@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "#": {
+      "item": "minecraft:lightning_rod"
+    },
+    "A": {
+      "item": "lidmod:elektrum_fiber"
+    },
+    "B": {
+      "item": "lidmod:thunder_jug"
+    },
+    "C": {
+      "item": "lidmod:transformer"
+    },
+    "D": {
+      "item": "lidmod:accumulator"
+    }
+  },
+  "pattern": [
+    " # ",
+    "CA ",
+    "DB "
+  ],
+  "result": {
+    "item": "lidmod:compress_station"
+  }
+}

@@ -1,5 +1,6 @@
 {
   "values": [
-    "lidmod:recipe"
+    "lidmod:recipe_accumulator",
+    "lidmod:recipe_compress_station"
   ]
 }
