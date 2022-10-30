@@ -16,6 +16,10 @@ public class ModBlockEntities {
             = BLOCK_ENTITIES.register("netherite_frame", () ->
             BlockEntityType.Builder.of(NetheriteFrameEntity::new, ModBlocks.NETHERITE_FRAME.get()).build(null));
 
+    public static final RegistryObject<BlockEntityType<AccumulatorEntity>> ACCUMULATOR
+            = BLOCK_ENTITIES.register("accumulator", () ->
+            BlockEntityType.Builder.of(AccumulatorEntity::new, ModBlocks.ACCUMULATOR.get()).build(null));
+
     public static void register(IEventBus eventBus) {
         BLOCK_ENTITIES.register(eventBus);
     }

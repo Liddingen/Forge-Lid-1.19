@@ -6,9 +6,12 @@ import net.liddingen.lidmod.block.entity.ModBlockEntities;
 import net.liddingen.lidmod.item.ModItems;
 import net.liddingen.lidmod.menu.Menu;
 import net.liddingen.lidmod.painting.ModPaintings;
+import net.liddingen.lidmod.screen.AccumulatorScreen;
+import net.liddingen.lidmod.screen.ModMenuTypes;
 import net.liddingen.lidmod.villager.ModVillagers;
 import net.liddingen.lidmod.world.feature.ModConfiguredFeatures;
 import net.liddingen.lidmod.world.feature.ModPlacedFeatures;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -36,6 +39,7 @@ public class LidMod {
 
         ModVillagers.register(modEventBus);
         ModBlockEntities.register(modEventBus);
+        ModMenuTypes.register(modEventBus);
         Menu.register(modEventBus);
 
         modEventBus.addListener(this::commonSetup);
@@ -54,7 +58,7 @@ public class LidMod {
     public static class ClientModEvents {
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
-
+            MenuScreens.register(ModMenuTypes.ACCUMULATOR_MENU.get(), AccumulatorScreen::new);
         }
     }
 }
