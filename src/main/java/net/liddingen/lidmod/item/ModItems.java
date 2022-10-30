@@ -22,6 +22,8 @@ public class ModItems {
             () -> new Item(new Item.Properties().tab(ModCreativeModeTab.LID_TAB)));
     public static final RegistryObject<Item> ELEKTRUM_FIBER = ITEMS.register("elektrum_fiber",
             () -> new Item(new Item.Properties().tab(ModCreativeModeTab.LID_TAB)));
+    public static final RegistryObject<Item> JUG = ITEMS.register("jug",
+            () -> new Item(new Item.Properties().tab(ModCreativeModeTab.LID_TAB).stacksTo(16)));
     public static final RegistryObject<Item> THUNDER_JUG = ITEMS.register("thunder_jug",
             () -> new Item(new Item.Properties().tab(ModCreativeModeTab.LID_TAB).stacksTo(16)));
     public static final RegistryObject<Item> ELEKTRUM_CELL = ITEMS.register("elektrum_cell",

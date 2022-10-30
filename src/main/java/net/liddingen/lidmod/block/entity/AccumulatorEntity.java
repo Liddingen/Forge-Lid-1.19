@@ -149,7 +149,7 @@ public class AccumulatorEntity extends BlockEntity implements MenuProvider {
 
         if(hasRecipe(pEntity)) {
             pEntity.itemHandler.extractItem(1, 1, false);
-            pEntity.itemHandler.setStackInSlot(2, new ItemStack(ModItems.ELEKTRUM.get(),  //hier steht auch was zu ergebnis!
+            pEntity.itemHandler.setStackInSlot(2, new ItemStack(ModItems.THUNDER_JUG.get(),  //hier steht auch was zu ergebnis!
                     pEntity.itemHandler.getStackInSlot(2).getCount() + 1));
 
             pEntity.resetProgress();
@@ -163,10 +163,10 @@ public class AccumulatorEntity extends BlockEntity implements MenuProvider {
             inventory.setItem(i, entity.itemHandler.getStackInSlot(i));
         }
 
-        boolean hasThunderJugInFirstSlot = entity.itemHandler.getStackInSlot(1).getItem() == ModItems.THUNDER_JUG.get();
+        boolean hasThunderJugInFirstSlot = entity.itemHandler.getStackInSlot(1).getItem() == ModItems.JUG.get();
 
         return hasThunderJugInFirstSlot && canInsertAmountIntoOutputSlot(inventory) &&
-                canInsertItemIntoOutputSlot(inventory, new ItemStack(ModItems.ELEKTRUM.get(), 1));  //gefüllter thunder Jug erstellen
+                canInsertItemIntoOutputSlot(inventory, new ItemStack(ModItems.THUNDER_JUG.get(), 1));  //gefüllter thunder Jug erstellen
 
     }
 
