@@ -2,7 +2,6 @@ package net.liddingen.lidmod.block.entity;
 
 import net.liddingen.lidmod.networking.packet.ItemStackSyncS2CPacket;
 import net.liddingen.lidmod.networking.ModMessages;
-import net.liddingen.lidmod.item.ModItems;
 import net.liddingen.lidmod.screen.NetheriteFrameMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -16,7 +15,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
@@ -141,58 +139,4 @@ public class NetheriteFrameEntity extends BlockEntity implements MenuProvider {
 
         Containers.dropContents(this.level, this.worldPosition, inventory);
     }
-/*
-    public static void tick(Level level, BlockPos pos, BlockState state, NetheriteFrameEntity pEntity) {
-        if (level.isClientSide()) {
-            return;
-        }
-
-        if (hasRecipe(pEntity)) {
-            pEntity.progress++;
-            setChanged(level, pos, state);
-
-            if (pEntity.progress >= pEntity.maxProgress) {
-                craftItem(pEntity);
-            }
-        } else {
-            pEntity.resetProgress();
-            setChanged(level, pos, state);
-        }
-    }
-
-    private void resetProgress() {
-        this.progress = 0;
-    }
-
-    private static void craftItem(NetheriteFrameEntity pEntity) {
-
-        if(hasRecipe(pEntity)) {
-            pEntity.itemHandler.extractItem(1, 1, false);
-            pEntity.itemHandler.setStackInSlot(2, new ItemStack(ModItems.THUNDER_JUG.get(),  //hier steht auch was zu ergebnis!
-                    pEntity.itemHandler.getStackInSlot(2).getCount() + 1));
-
-            pEntity.resetProgress();
-        }
-
-    }
-    private static boolean hasRecipe(NetheriteFrameEntity entity) {
-        SimpleContainer inventory = new SimpleContainer(entity.itemHandler.getSlots());
-        for (int i = 0; i < entity.itemHandler.getSlots(); i++) {
-            inventory.setItem(i, entity.itemHandler.getStackInSlot(i));
-        }
-
-        boolean hasJugInFirstSlot = entity.itemHandler.getStackInSlot(1).getItem() == ModItems.JUG.get();
-
-        return hasJugInFirstSlot && canInsertAmountIntoOutputSlot(inventory) &&
-                canInsertItemIntoOutputSlot(inventory, new ItemStack(ModItems.THUNDER_JUG.get(), 1));  //gefüllter thunder Jug erstellen
-
-    }
-
-    private static boolean canInsertItemIntoOutputSlot(SimpleContainer inventory, ItemStack stack) {
-        return inventory.getItem(0).getItem() == stack.getItem() || inventory.getItem(0).isEmpty();
-    }
-
-    private static boolean canInsertAmountIntoOutputSlot(SimpleContainer inventory) {
-        return inventory.getItem(0).getMaxStackSize() > inventory.getItem(0).getCount();
-    } */
 }

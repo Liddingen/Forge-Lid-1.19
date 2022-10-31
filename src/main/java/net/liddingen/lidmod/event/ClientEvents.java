@@ -3,7 +3,6 @@ package net.liddingen.lidmod.event;
 import net.liddingen.lidmod.LidMod;
 import net.liddingen.lidmod.block.entity.ModBlockEntities;
 import net.liddingen.lidmod.block.entity.renderer.NetheriteFrameEntityRenderer;
-import net.liddingen.lidmod.networking.ModMessages;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;

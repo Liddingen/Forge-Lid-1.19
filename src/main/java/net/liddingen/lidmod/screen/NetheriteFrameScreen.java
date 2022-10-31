@@ -31,16 +31,8 @@ public class NetheriteFrameScreen extends AbstractContainerScreen<NetheriteFrame
         int y = (height - imageHeight) / 2;
 
         this.blit(pPoseStack, x, y, 0, 0, imageWidth, imageHeight);
+    }
 
-       // renderProgressArrow(pPoseStack, x, y);
-    }
-/*
-    private void renderProgressArrow(PoseStack pPoseStack, int x, int y) {
-        if(menu.isCrafting()) {
-            blit(pPoseStack, x + 105, y + 33, 176, 0, 8, menu.getScaledProgress());
-        }
-    }
-*/
     @Override
     public void render(PoseStack pPoseStack, int mouseX, int mouseY, float delta) {
         renderBackground(pPoseStack);

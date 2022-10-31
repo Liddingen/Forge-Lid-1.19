@@ -30,8 +30,6 @@ public class NetheriteFrameEntityRenderer implements BlockEntityRenderer<Netheri
         pPoseStack.pushPose();
         pPoseStack.translate(0.5f, 0.3f, 0.5f);
         pPoseStack.scale(0.35f, 0.35f, 0.35f);
-       // pPoseStack.mulPose(Vector3f.XP.rotationDegrees(0));
-       // pPoseStack.mulPose(Vector3f.YP.rotationDegrees(0));
 
         switch (pBlockEntity.getBlockState().getValue(NetheriteFrame.FACING)) {
             case NORTH -> pPoseStack.mulPose(Vector3f.YP.rotationDegrees(0));
