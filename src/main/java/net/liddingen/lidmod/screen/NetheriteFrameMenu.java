@@ -1,6 +1,5 @@
 package net.liddingen.lidmod.screen;
 import net.liddingen.lidmod.block.ModBlocks;
-import net.liddingen.lidmod.block.entity.AccumulatorEntity;
 import net.liddingen.lidmod.block.entity.NetheriteFrameEntity;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
@@ -18,12 +17,12 @@ public class NetheriteFrameMenu extends AbstractContainerMenu {
     private final ContainerData data;
 
     public NetheriteFrameMenu(int id, Inventory inv, FriendlyByteBuf extraData) {
-        this(id, inv, inv.player.level.getBlockEntity(extraData.readBlockPos()), new SimpleContainerData(2));
+        this(id, inv, inv.player.level.getBlockEntity(extraData.readBlockPos()), new SimpleContainerData(0));
     }
 
     public NetheriteFrameMenu(int id, Inventory inv, BlockEntity entity, ContainerData data) {
         super(ModMenuTypes.NETHERITE_FRAME_MENU.get(), id);
-        checkContainerSize(inv, 3);
+        checkContainerSize(inv, 1);
         blockEntity = (NetheriteFrameEntity) entity;
         this.level = inv.player.level;
         this.data = data;
@@ -32,18 +31,17 @@ public class NetheriteFrameMenu extends AbstractContainerMenu {
         addPlayerHotbar(inv);
 
         this.blockEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(handler -> {
-            this.addSlot(new SlotItemHandler(handler, 0, 12, 15));
-            this.addSlot(new SlotItemHandler(handler, 1, 86, 15));         //positionen der Slots!
-            this.addSlot(new SlotItemHandler(handler, 2, 86, 60));
+           // this.addSlot(new SlotItemHandler(handler, 0, 12, 15));
+            this.addSlot(new SlotItemHandler(handler, 0, 80, 33));         //positionen der Slots!
+          //  this.addSlot(new SlotItemHandler(handler, 2, 86, 60));
         });
 
         addDataSlots(data);
     }
-
+/*
     public boolean isCrafting() {
         return data.get(0) > 0;
     }
-
     public int getScaledProgress() {
         int progress = this.data.get(0);
         int maxProgress = this.data.get(1);  // Max Progress
@@ -51,6 +49,8 @@ public class NetheriteFrameMenu extends AbstractContainerMenu {
 
         return maxProgress != 0 && progress != 0 ? progress * progressArrowSize / maxProgress : 0;
     }
+    */
+
 
     // CREDIT GOES TO: diesieben07 | https://github.com/diesieben07/SevenCommons
     // must assign a slot number to each of the slots used by the GUI.
@@ -68,7 +68,7 @@ public class NetheriteFrameMenu extends AbstractContainerMenu {
     private static final int TE_INVENTORY_FIRST_SLOT_INDEX = VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT;
 
     // THIS YOU HAVE TO DEFINE!
-    private static final int TE_INVENTORY_SLOT_COUNT = 3;  // must be the number of slots you have!
+    private static final int TE_INVENTORY_SLOT_COUNT = 1;  // must be the number of slots you have!
 
     @Override
     public ItemStack quickMoveStack(Player playerIn, int index) {

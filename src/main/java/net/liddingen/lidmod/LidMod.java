@@ -4,6 +4,7 @@ import com.mojang.logging.LogUtils;
 import net.liddingen.lidmod.block.ModBlocks;
 import net.liddingen.lidmod.block.entity.ModBlockEntities;
 import net.liddingen.lidmod.item.ModItems;
+import net.liddingen.lidmod.networking.ModMessages;
 import net.liddingen.lidmod.painting.ModPaintings;
 import net.liddingen.lidmod.screen.AccumulatorScreen;
 import net.liddingen.lidmod.screen.ModMenuTypes;
@@ -48,6 +49,7 @@ public class LidMod {
 
     private void commonSetup(final FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
+            ModMessages.register();
             ModVillagers.registerPOIs();
         });
     }

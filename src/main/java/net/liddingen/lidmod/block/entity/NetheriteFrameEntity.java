@@ -1,5 +1,7 @@
 package net.liddingen.lidmod.block.entity;
 
+import net.liddingen.lidmod.networking.packet.ItemStackSyncS2CPacket;
+import net.liddingen.lidmod.networking.ModMessages;
 import net.liddingen.lidmod.item.ModItems;
 import net.liddingen.lidmod.screen.NetheriteFrameMenu;
 import net.minecraft.core.BlockPos;
@@ -26,12 +28,29 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class NetheriteFrameEntity extends BlockEntity implements MenuProvider {
-    private final ItemStackHandler itemHandler = new ItemStackHandler(3) {
+    private final ItemStackHandler itemHandler = new ItemStackHandler(1) {
         @Override
         protected void onContentsChanged(int slot) {
             setChanged();
+            if(!level.isClientSide()) {
+                ModMessages.sendToClients(new ItemStackSyncS2CPacket(this, worldPosition));
+            }
         }
     };
+
+    public ItemStack getRenderStack() {
+        ItemStack stack;
+        stack = itemHandler.getStackInSlot(0);
+
+        return stack;
+    }
+
+
+    public void setHandler(ItemStackHandler itemStackHandler) {
+        for (int i = 0; i < itemStackHandler.getSlots(); i++) {
+            itemHandler.setStackInSlot(i, itemStackHandler.getStackInSlot(i));
+        }
+    }
 
     private LazyOptional<IItemHandler> lazyItemHandler = LazyOptional.empty();
 
@@ -42,6 +61,7 @@ public class NetheriteFrameEntity extends BlockEntity implements MenuProvider {
     public NetheriteFrameEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.NETHERITE_FRAME.get(), pos, state);
         this.data = new ContainerData() {
+
             @Override
             public int get(int index) {
                 return switch (index) {
@@ -121,7 +141,7 @@ public class NetheriteFrameEntity extends BlockEntity implements MenuProvider {
 
         Containers.dropContents(this.level, this.worldPosition, inventory);
     }
-
+/*
     public static void tick(Level level, BlockPos pos, BlockState state, NetheriteFrameEntity pEntity) {
         if (level.isClientSide()) {
             return;
@@ -155,7 +175,6 @@ public class NetheriteFrameEntity extends BlockEntity implements MenuProvider {
         }
 
     }
-
     private static boolean hasRecipe(NetheriteFrameEntity entity) {
         SimpleContainer inventory = new SimpleContainer(entity.itemHandler.getSlots());
         for (int i = 0; i < entity.itemHandler.getSlots(); i++) {
@@ -170,10 +189,10 @@ public class NetheriteFrameEntity extends BlockEntity implements MenuProvider {
     }
 
     private static boolean canInsertItemIntoOutputSlot(SimpleContainer inventory, ItemStack stack) {
-        return inventory.getItem(2).getItem() == stack.getItem() || inventory.getItem(2).isEmpty();
+        return inventory.getItem(0).getItem() == stack.getItem() || inventory.getItem(0).isEmpty();
     }
 
     private static boolean canInsertAmountIntoOutputSlot(SimpleContainer inventory) {
-        return inventory.getItem(2).getMaxStackSize() > inventory.getItem(2).getCount();
-    }
+        return inventory.getItem(0).getMaxStackSize() > inventory.getItem(0).getCount();
+    } */
 }

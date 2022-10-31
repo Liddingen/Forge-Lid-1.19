@@ -99,11 +99,11 @@ public class NetheriteFrame extends BaseEntityBlock {
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new NetheriteFrameEntity(pos, state);
     }
-
+/*
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state,
                                                                   BlockEntityType<T> type) {
         return createTickerHelper(type, ModBlockEntities.NETHERITE_FRAME.get(), NetheriteFrameEntity::tick);
-    }
+    } */
 }
