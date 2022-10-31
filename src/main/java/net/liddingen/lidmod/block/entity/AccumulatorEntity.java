@@ -16,7 +16,6 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -163,9 +162,9 @@ public class AccumulatorEntity extends BlockEntity implements MenuProvider {
             inventory.setItem(i, entity.itemHandler.getStackInSlot(i));
         }
 
-        boolean hasThunderJugInFirstSlot = entity.itemHandler.getStackInSlot(1).getItem() == ModItems.JUG.get();
+        boolean hasJugInFirstSlot = entity.itemHandler.getStackInSlot(1).getItem() == ModItems.JUG.get();
 
-        return hasThunderJugInFirstSlot && canInsertAmountIntoOutputSlot(inventory) &&
+        return hasJugInFirstSlot && canInsertAmountIntoOutputSlot(inventory) &&
                 canInsertItemIntoOutputSlot(inventory, new ItemStack(ModItems.THUNDER_JUG.get(), 1));  //gefüllter thunder Jug erstellen
 
     }

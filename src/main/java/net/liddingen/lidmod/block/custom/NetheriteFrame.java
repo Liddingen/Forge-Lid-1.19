@@ -2,14 +2,11 @@ package net.liddingen.lidmod.block.custom;
 
 import net.liddingen.lidmod.block.entity.ModBlockEntities;
 import net.liddingen.lidmod.block.entity.NetheriteFrameEntity;
-import net.liddingen.lidmod.menus.NetheriteFrameMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.MenuConstructor;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -27,16 +24,13 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
 
-
-public class NetheriteFrame extends Block implements EntityBlock {
-
+public class NetheriteFrame extends BaseEntityBlock {
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
+
 
     public NetheriteFrame(Properties properties) {
         super(properties);
     }
-
-
 
     private static final VoxelShape SHAPE =
             Block.box(3, 0, 3, 13, 9, 13);
@@ -66,37 +60,50 @@ public class NetheriteFrame extends Block implements EntityBlock {
         builder.add(FACING);
     }
 
+    /* Entity*/
 
-    //Entity
+    @Override
+    public RenderShape getRenderShape(BlockState p_49232_) {
+        return RenderShape.MODEL;
+    }
+
+    @Override
+    public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
+        if (pState.getBlock() != pNewState.getBlock()) {
+            BlockEntity blockEntity = pLevel.getBlockEntity(pPos);
+            if (blockEntity instanceof NetheriteFrameEntity) {
+                ((NetheriteFrameEntity) blockEntity).drops();
+            }
+        }
+        super.onRemove(pState, pLevel, pPos, pNewState, pIsMoving);
+    }
+
+    @Override
+    public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos,
+                                 Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
+        if (!pLevel.isClientSide()) {
+            BlockEntity entity = pLevel.getBlockEntity(pPos);
+            if (entity instanceof NetheriteFrameEntity) {
+                NetworkHooks.openScreen(((ServerPlayer) pPlayer), (NetheriteFrameEntity) entity, pPos);
+            } else {
+                throw new IllegalStateException("Our Container provider is missing!");
+            }
+        }
+
+        return InteractionResult.sidedSuccess(pLevel.isClientSide());
+    }
 
 
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return ModBlockEntities.NETHERITE_FRAME.get().create(pos, state);
+        return new NetheriteFrameEntity(pos, state);
     }
 
     @Nullable
     @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        return level.isClientSide() ? null :($0, $1, $2, ModBlockEntities) -> {
-          if(ModBlockEntities instanceof NetheriteFrameEntity netheriteFrame) {
-              netheriteFrame.tick();
-          }
-
-        };
-    }
-
-    @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
-        if(!level.isClientSide()) {
-            if(level.getBlockEntity(pos) instanceof NetheriteFrameEntity netherite_frame) {
-                MenuConstructor menuConstructor = NetheriteFrameMenu.getServerMenu(netherite_frame, pos);
-                SimpleMenuProvider provider = new SimpleMenuProvider(menuConstructor, NetheriteFrameEntity.TITLE);
-                NetworkHooks.openScreen((ServerPlayer) player, provider, pos);
-            }
-        }
-
-        return InteractionResult.sidedSuccess(!level.isClientSide());
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state,
+                                                                  BlockEntityType<T> type) {
+        return createTickerHelper(type, ModBlockEntities.NETHERITE_FRAME.get(), NetheriteFrameEntity::tick);
     }
 }

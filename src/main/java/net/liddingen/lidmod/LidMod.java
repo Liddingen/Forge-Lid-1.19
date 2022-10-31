@@ -4,10 +4,10 @@ import com.mojang.logging.LogUtils;
 import net.liddingen.lidmod.block.ModBlocks;
 import net.liddingen.lidmod.block.entity.ModBlockEntities;
 import net.liddingen.lidmod.item.ModItems;
-import net.liddingen.lidmod.menu.Menu;
 import net.liddingen.lidmod.painting.ModPaintings;
 import net.liddingen.lidmod.screen.AccumulatorScreen;
 import net.liddingen.lidmod.screen.ModMenuTypes;
+import net.liddingen.lidmod.screen.NetheriteFrameScreen;
 import net.liddingen.lidmod.villager.ModVillagers;
 import net.liddingen.lidmod.world.feature.ModConfiguredFeatures;
 import net.liddingen.lidmod.world.feature.ModPlacedFeatures;
@@ -40,7 +40,6 @@ public class LidMod {
         ModVillagers.register(modEventBus);
         ModBlockEntities.register(modEventBus);
         ModMenuTypes.register(modEventBus);
-        Menu.register(modEventBus);
 
         modEventBus.addListener(this::commonSetup);
 
@@ -59,6 +58,7 @@ public class LidMod {
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
             MenuScreens.register(ModMenuTypes.ACCUMULATOR_MENU.get(), AccumulatorScreen::new);
+            MenuScreens.register(ModMenuTypes.NETHERITE_FRAME_MENU.get(), NetheriteFrameScreen::new);
         }
     }
 }

@@ -1,105 +1,179 @@
 package net.liddingen.lidmod.block.entity;
 
-import net.liddingen.lidmod.LidMod;
+import net.liddingen.lidmod.item.ModItems;
+import net.liddingen.lidmod.screen.NetheriteFrameMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.animal.Pig;
+import net.minecraft.world.Containers;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandlerModifiable;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class NetheriteFrameEntity extends BlockEntity {
-
-    private static final int MAX_PROGRESS = 100;
-    private int progress;
-
-    private final ItemStackHandler inventory = new ItemStackHandler(1);
-    private final LazyOptional<IItemHandlerModifiable> optional = LazyOptional.of(() -> this.inventory);
-    private final ContainerData data = new ContainerData() {
+public class NetheriteFrameEntity extends BlockEntity implements MenuProvider {
+    private final ItemStackHandler itemHandler = new ItemStackHandler(3) {
         @Override
-        public int get(int index) {  //SUS
-            return switch (index) {
-                case 0 -> NetheriteFrameEntity.this.progress;
-                case 1 -> NetheriteFrameEntity.MAX_PROGRESS;
-                default -> 0;
-            };
-        }
-
-        @Override
-        public void set(int index, int value) {   //SUS
-            switch(index) {
-                case 0 -> NetheriteFrameEntity.this.progress = value;
-                default -> {}
-            }
-
-        }
-
-        @Override
-        public int getCount() {
-            return 1;
+        protected void onContentsChanged(int slot) {
+            setChanged();
         }
     };
 
-    public void tick() {
-        if (level == null)
-            return;
+    private LazyOptional<IItemHandler> lazyItemHandler = LazyOptional.empty();
 
-        progress++;
-        if (progress > MAX_PROGRESS) {
-            progress = 0;
-            var pig = new Pig(EntityType.PIG, this.level);
-            pig.setPos(this.worldPosition.getX(), this.worldPosition.getY(), this.worldPosition.getZ());
-            this.level.addFreshEntity(pig);
-        }
-
-    }
-
-    public static final Component TITLE = Component.translatable("container." + LidMod.MOD_ID + ".netherite_frame");
+    protected final ContainerData data;
+    private int progress = 0;
+    private int maxProgress = 78;
 
     public NetheriteFrameEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.NETHERITE_FRAME.get(), pos, state);
+        this.data = new ContainerData() {
+            @Override
+            public int get(int index) {
+                return switch (index) {
+                    case 0 -> NetheriteFrameEntity.this.progress;
+                    case 1 -> NetheriteFrameEntity.this.maxProgress;
+                    default -> 0;
+                };
+            }
+
+            @Override
+            public void set(int index, int value) {
+                switch (index) {
+                    case 0 -> NetheriteFrameEntity.this.progress = value;
+                    case 1 -> NetheriteFrameEntity.this.maxProgress = value;
+                }
+            }
+
+            @Override
+            public int getCount() {
+                return 2;
+            }
+        };
+    }
+
+    @Override
+    public Component getDisplayName() {
+        return Component.literal("Netherite Frame");
+    }
+
+    @Nullable
+    @Override
+    public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
+        return new NetheriteFrameMenu(id, inventory, this, this.data);
+    }
+
+    @Override
+    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
+        if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            return lazyItemHandler.cast();
+        }
+
+        return super.getCapability(cap, side);
+    }
+
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        lazyItemHandler = LazyOptional.of(() -> itemHandler);
+    }
+
+    @Override
+    public void invalidateCaps() {
+        super.invalidateCaps();
+        lazyItemHandler.invalidate();
+    }
+
+    @Override
+    protected void saveAdditional(CompoundTag nbt) {
+        nbt.put("inventory", itemHandler.serializeNBT());
+        nbt.putInt("netherite_frame.progress", this.progress);
+
+        super.saveAdditional(nbt);
     }
 
     @Override
     public void load(CompoundTag nbt) {
         super.load(nbt);
-        this.progress = nbt.getInt("Progress");
-        this.inventory.deserializeNBT(nbt.getCompound("Inventory"));
+        itemHandler.deserializeNBT(nbt.getCompound("inventory"));
+        progress = nbt.getInt("netherite_frame_progress");
     }
 
-    @Override
-    protected void saveAdditional(CompoundTag nbt) {
-        super.saveAdditional(nbt);
-        nbt.putInt("Progress", this.progress);
-        nbt.put("Inventory", this.inventory.serializeNBT());
+    public void drops() {
+        SimpleContainer inventory = new SimpleContainer(itemHandler.getSlots());
+        for (int i = 0; i < itemHandler.getSlots(); i++) {
+            inventory.setItem(i, itemHandler.getStackInSlot(i));
+        }
+
+        Containers.dropContents(this.level, this.worldPosition, inventory);
     }
 
-    @Override
-    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        return cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY ? this.optional.cast() : super.getCapability(cap, side);
+    public static void tick(Level level, BlockPos pos, BlockState state, NetheriteFrameEntity pEntity) {
+        if (level.isClientSide()) {
+            return;
+        }
+
+        if (hasRecipe(pEntity)) {
+            pEntity.progress++;
+            setChanged(level, pos, state);
+
+            if (pEntity.progress >= pEntity.maxProgress) {
+                craftItem(pEntity);
+            }
+        } else {
+            pEntity.resetProgress();
+            setChanged(level, pos, state);
+        }
     }
 
-    @Override
-    public void invalidateCaps() {
-       this.optional.invalidate();
+    private void resetProgress() {
+        this.progress = 0;
     }
 
-    public ItemStackHandler getInventory() {
-        return inventory;
+    private static void craftItem(NetheriteFrameEntity pEntity) {
+
+        if(hasRecipe(pEntity)) {
+            pEntity.itemHandler.extractItem(1, 1, false);
+            pEntity.itemHandler.setStackInSlot(2, new ItemStack(ModItems.THUNDER_JUG.get(),  //hier steht auch was zu ergebnis!
+                    pEntity.itemHandler.getStackInSlot(2).getCount() + 1));
+
+            pEntity.resetProgress();
+        }
+
     }
 
-    public ContainerData getContainerData() {
-        return this.data;
+    private static boolean hasRecipe(NetheriteFrameEntity entity) {
+        SimpleContainer inventory = new SimpleContainer(entity.itemHandler.getSlots());
+        for (int i = 0; i < entity.itemHandler.getSlots(); i++) {
+            inventory.setItem(i, entity.itemHandler.getStackInSlot(i));
+        }
 
+        boolean hasJugInFirstSlot = entity.itemHandler.getStackInSlot(1).getItem() == ModItems.JUG.get();
+
+        return hasJugInFirstSlot && canInsertAmountIntoOutputSlot(inventory) &&
+                canInsertItemIntoOutputSlot(inventory, new ItemStack(ModItems.THUNDER_JUG.get(), 1));  //gefüllter thunder Jug erstellen
+
+    }
+
+    private static boolean canInsertItemIntoOutputSlot(SimpleContainer inventory, ItemStack stack) {
+        return inventory.getItem(2).getItem() == stack.getItem() || inventory.getItem(2).isEmpty();
+    }
+
+    private static boolean canInsertAmountIntoOutputSlot(SimpleContainer inventory) {
+        return inventory.getItem(2).getMaxStackSize() > inventory.getItem(2).getCount();
     }
 }

@@ -17,6 +17,9 @@ public class ModMenuTypes {
     public static final RegistryObject<MenuType<AccumulatorMenu>> ACCUMULATOR_MENU =
             registerMenuType(AccumulatorMenu::new, "accumulator_menu");
 
+    public static final RegistryObject<MenuType<NetheriteFrameMenu>> NETHERITE_FRAME_MENU =
+            registerMenuType(NetheriteFrameMenu::new, "netherite_frane_menu");
+
 
     private static <T extends AbstractContainerMenu> RegistryObject<MenuType<T>> registerMenuType(IContainerFactory<T> factory,
                                                                                                   String name) {
