@@ -1,3 +1,7 @@
 {
-  "parent": "lidmod:block/transformer"
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "lidmod:item/transformer"
+  }
+
 }
