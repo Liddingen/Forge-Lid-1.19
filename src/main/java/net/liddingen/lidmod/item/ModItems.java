@@ -1,11 +1,13 @@
 package net.liddingen.lidmod.item;
 
 import net.liddingen.lidmod.LidMod;
+import net.liddingen.lidmod.entity.ModEntityTypes;
 import net.liddingen.lidmod.item.custom.InstructionPaper;
 import net.liddingen.lidmod.item.custom.InstructionPaperFour;
 import net.liddingen.lidmod.item.custom.InstructionPaperThree;
 import net.liddingen.lidmod.item.custom.InstructionPaperTwo;
 import net.minecraft.world.item.Item;
+import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -28,6 +30,10 @@ public class ModItems {
             () -> new Item(new Item.Properties().tab(ModCreativeModeTab.LID_TAB).stacksTo(16)));
     public static final RegistryObject<Item> ELEKTRUM_CELL = ITEMS.register("elektrum_cell",
             () -> new Item(new Item.Properties().tab(ModCreativeModeTab.LID_TAB)));
+
+    public static final RegistryObject<Item> SNAIL_SPAWN_EGG = ITEMS.register("snail_spawn_egg",
+            () -> new ForgeSpawnEggItem(ModEntityTypes.SNAIL, 0xb0b58a, 0x83663c,
+                    new Item.Properties().tab(ModCreativeModeTab.LID_TAB)));
 
     public static final RegistryObject<Item> INSTRUCTION_PAPER = ITEMS.register("instruction_paper",
             () -> new InstructionPaper(new Item.Properties().tab(ModCreativeModeTab.LID_TAB).stacksTo(1)));
