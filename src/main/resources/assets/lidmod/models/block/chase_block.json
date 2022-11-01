@@ -1,6 +1,12 @@
 {
-  "parent": "block/cube_all",
+  "parent": "block/cube",
   "textures": {
-    "all": "lidmod:block/chase_block"
+    "down": "minecraft:block/spruce_planks",
+    "east": "lidmod:block/chase_block_side",
+    "north": "lidmod:block/chase_block_front",
+    "particle": "lidmod:block/chase_block_front",
+    "south": "lidmod:block/chase_block_side",
+    "up": "lidmod:block/chase_block_top",
+    "west": "lidmod:block/chase_block_side"
   }
 }

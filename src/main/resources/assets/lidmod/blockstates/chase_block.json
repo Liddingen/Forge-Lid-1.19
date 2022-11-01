@@ -1,7 +1,5 @@
 {
   "variants": {
-    "": {
-      "model":  "lidmod:block/chase_block"
-    }
+    "": { "model":  "lidmod:block/chase_block" }
   }
 }
