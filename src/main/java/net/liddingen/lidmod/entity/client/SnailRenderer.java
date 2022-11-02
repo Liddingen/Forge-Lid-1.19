@@ -14,7 +14,7 @@ import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
 public class SnailRenderer extends GeoEntityRenderer<SnailEntity> {
     public SnailRenderer(EntityRendererProvider.Context renderManager) {
         super(renderManager, new SnailModel());
-        this.shadowRadius = 1f;   //Shadow
+        this.shadowRadius = 5f;   //Shadow
     }
 
     @Override
@@ -27,7 +27,7 @@ public class SnailRenderer extends GeoEntityRenderer<SnailEntity> {
                                     @Nullable MultiBufferSource renderTypeBuffer,
                                     @Nullable VertexConsumer vertexBuilder, int packedLightIn,
                                     ResourceLocation textureLocation) {
-        stack.scale(1f, 1f, 1f);  //Größe in alle x/y/z richtungen ändern
+        stack.scale(3.5f, 3.5f, 3.5f);  //Größe in alle x/y/z richtungen ändern
         return super.getRenderType(animatable, partialTicks, stack, renderTypeBuffer, vertexBuilder, packedLightIn, textureLocation);
     }
 }
