@@ -137,6 +137,11 @@ public class ModEvents {
                         new ItemStack(Items.EMERALD,3 ),
                         stack,16,0,0.03F));
             }
+
+
+        }
+        public boolean canRestock() {
+            return false;
         }
     }
 
