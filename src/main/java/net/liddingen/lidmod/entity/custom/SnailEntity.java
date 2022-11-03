@@ -174,8 +174,8 @@ public class SnailEntity extends Animal implements ItemSteerable, Saddleable, IA
             float f = Mth.cos(this.yBodyRot * ((float) Math.PI / 180F));
             float f1 = Mth.sin(this.yBodyRot * ((float) Math.PI / 180F));
             float f2 = 0.3F;
-            p_30830_.setPos(this.getX() + (double) (0.3F * f1),
-                    this.getY() + this.getPassengersRidingOffset() + p_30830_.getMyRidingOffset(), this.getZ() - (double) (0.01F * f));
+            p_30830_.setPos(this.getX() + (double) (-3.1F * f1),
+                    this.getY() + this.getPassengersRidingOffset() + p_30830_.getMyRidingOffset(), this.getZ() - (double) (-3.1F * f));
         }
     }
 
