@@ -1,39 +1,54 @@
 package net.liddingen.lidmod.entity.custom;
 
+/*
+import javax.annotation.Nullable;
+
 import com.google.common.collect.Sets;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.*;
-import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
-import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.ai.goal.BreedGoal;
+import net.minecraft.world.entity.ai.goal.FloatGoal;
+import net.minecraft.world.entity.ai.goal.FollowParentGoal;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.PanicGoal;
+import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
+import net.minecraft.world.entity.ai.goal.RunAroundLikeCrazyGoal;
+import net.minecraft.world.entity.ai.goal.TemptGoal;
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.animal.Animal;
-import net.minecraft.world.entity.animal.frog.Frog;
+import net.minecraft.world.entity.animal.horse.AbstractChestedHorse;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.DismountHelper;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.WoolCarpetBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -46,20 +61,71 @@ import software.bernie.geckolib3.util.GeckoLibUtil;
 
 import java.util.Set;
 
-public class SnailEntity extends Animal implements ItemSteerable, Saddleable, IAnimatable {
-
-    //Saddle
-    private static final EntityDataAccessor<Boolean> DATA_SADDLE_ID = SynchedEntityData.defineId(SnailEntity.class, EntityDataSerializers.BOOLEAN);
-    private static final EntityDataAccessor<Integer> DATA_BOOST_TIME = SynchedEntityData.defineId(SnailEntity.class, EntityDataSerializers.INT);
+public class SnailEntity1 extends AbstractChestedHorse implements ItemSteerable, Saddleable, IAnimatable {
+    private static final int MAX_STRENGTH = 5;
+    private static final EntityDataAccessor<Integer> DATA_STRENGTH_ID = SynchedEntityData.defineId(net.minecraft.world.entity.animal.horse.Llama.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> DATA_SWAG_ID = SynchedEntityData.defineId(net.minecraft.world.entity.animal.horse.Llama.class, EntityDataSerializers.INT);
+//Saddle
+    private static final EntityDataAccessor<Boolean> DATA_SADDLE_ID = SynchedEntityData.defineId(SnailEntity1.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Integer> DATA_BOOST_TIME = SynchedEntityData.defineId(SnailEntity1.class, EntityDataSerializers.INT);
     private static final Ingredient FOOD_ITEMS = Ingredient.of(Items.OAK_LEAVES, Items.BIRCH_LEAVES, Items.SPRUCE_LEAVES, Items.DARK_OAK_LEAVES, Items.OAK_LEAVES,
             Items.ACACIA_LEAVES, Items.JUNGLE_LEAVES, Items.MANGROVE_LEAVES);
     private final ItemBasedSteering steering = new ItemBasedSteering(this.entityData, DATA_BOOST_TIME, DATA_SADDLE_ID);
-    //Saddle
 
     private AnimationFactory factory = GeckoLibUtil.createFactory(this);
 
-    public SnailEntity(EntityType<? extends Animal> entityType, Level level) {
+    public SnailEntity1(EntityType<? extends AbstractChestedHorse> entityType, Level level) {
         super(entityType, level);
+    }
+
+   // public SsnailEentity(EntityType<? extends net.minecraft.world.entity.animal.horse.Llama> p_30750_, Level p_30751_) {
+     //   super(p_30750_, p_30751_);
+   // }
+
+    private void setStrength(int p_30841_) {
+        this.entityData.set(DATA_STRENGTH_ID, Math.max(1, Math.min(5, p_30841_)));
+    }
+
+    private void setRandomStrength(RandomSource p_218818_) {
+        int i = p_218818_.nextFloat() < 0.04F ? 5 : 3;
+        this.setStrength(1 + p_218818_.nextInt(i));
+    }
+
+    public int getStrength() {
+        return this.entityData.get(DATA_STRENGTH_ID);
+    }
+
+    public void addAdditionalSaveData(CompoundTag p_30793_) {
+        super.addAdditionalSaveData(p_30793_);
+        this.steering.addAdditionalSaveData(p_30793_);
+        p_30793_.putInt("Strength", this.getStrength());
+        if (!this.inventory.getItem(1).isEmpty()) {
+            p_30793_.put("DecorItem", this.inventory.getItem(1).save(new CompoundTag()));
+        }
+
+    }
+
+    public void readAdditionalSaveData(CompoundTag p_30780_) {
+        this.steering.readAdditionalSaveData(p_30780_);
+        this.setStrength(p_30780_.getInt("Strength"));
+        super.readAdditionalSaveData(p_30780_);
+        if (p_30780_.contains("DecorItem", 10)) {
+            this.inventory.setItem(1, ItemStack.of(p_30780_.getCompound("DecorItem")));
+        }
+
+        this.updateContainerEquipment();
+    }
+
+    protected void registerGoals() {
+        this.goalSelector.addGoal(0, new FloatGoal(this));
+        this.goalSelector.addGoal(1, new RunAroundLikeCrazyGoal(this, 1.2D));
+        this.goalSelector.addGoal(3, new PanicGoal(this, 1.2D));
+        this.goalSelector.addGoal(4, new BreedGoal(this, 1.0D));
+        this.goalSelector.addGoal(5, new TemptGoal(this, 1.25D, Ingredient.of(Items.HAY_BLOCK), false));
+        this.goalSelector.addGoal(6, new FollowParentGoal(this, 1.0D));
+        this.goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(this, 0.7D));
+        this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 6.0F));
+        this.goalSelector.addGoal(9, new RandomLookAroundGoal(this));
     }
 
     public static AttributeSupplier setAttributes() {
@@ -70,21 +136,163 @@ public class SnailEntity extends Animal implements ItemSteerable, Saddleable, IA
                 .add(Attributes.MOVEMENT_SPEED, 0.1f).build();
     }
 
-    @Override
-    protected void registerGoals() {
-        this.goalSelector.addGoal(1, new FloatGoal(this));
-        this.goalSelector.addGoal(2, new BreedGoal(this, 1.0D));
-        this.goalSelector.addGoal(3, new TemptGoal(this, 1.2D, Ingredient.of(Items.CARROT_ON_A_STICK), false)); //Noch ändern
-        this.goalSelector.addGoal(3, new TemptGoal(this, 1.2D, FOOD_ITEMS, false));
-        this.goalSelector.addGoal(4, new MeleeAttackGoal(this, 1.2D, false));
-        this.goalSelector.addGoal(4, new WaterAvoidingRandomStrollGoal(this, 1.0D));
-        this.goalSelector.addGoal(5, new LookAtPlayerGoal(this, Player.class, 6.0F));
-        this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
-
-        this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, Frog.class, true));
-        this.targetSelector.addGoal(5, (new HurtByTargetGoal(this)).setAlertOthers());
+    protected int getInventorySize() {
+        return this.hasChest() ? 2 + 3 * this.getInventoryColumns() : super.getInventorySize();
     }
 
+
+
+    protected boolean handleEating(Player p_30796_, ItemStack p_30797_) {
+        int i = 0;
+        int j = 0;
+        float f = 0.0F;
+        boolean flag = false;
+        if (p_30797_.is(Items.WHEAT)) {
+            i = 10;
+            j = 3;
+            f = 2.0F;
+        } else if (p_30797_.is(Blocks.HAY_BLOCK.asItem())) {
+            i = 90;
+            j = 6;
+            f = 10.0F;
+            if (this.isTamed() && this.getAge() == 0 && this.canFallInLove()) {
+                flag = true;
+                this.setInLove(p_30796_);
+            }
+        }
+
+        if (this.getHealth() < this.getMaxHealth() && f > 0.0F) {
+            this.heal(f);
+            flag = true;
+        }
+
+        if (this.isBaby() && i > 0) {
+            this.level.addParticle(ParticleTypes.HAPPY_VILLAGER, this.getRandomX(1.0D), this.getRandomY() + 0.5D, this.getRandomZ(1.0D), 0.0D, 0.0D, 0.0D);
+            if (!this.level.isClientSide) {
+                this.ageUp(i);
+            }
+
+            flag = true;
+        }
+
+        if (j > 0 && (flag || !this.isTamed()) && this.getTemper() < this.getMaxTemper()) {
+            flag = true;
+            if (!this.level.isClientSide) {
+                this.modifyTemper(j);
+            }
+        }
+
+        if (flag && !this.isSilent()) {
+            SoundEvent soundevent = this.getEatingSound();
+            if (soundevent != null) {
+                this.level.playSound((Player)null, this.getX(), this.getY(), this.getZ(), this.getEatingSound(), this.getSoundSource(), 1.0F, 1.0F + (this.random.nextFloat() - this.random.nextFloat()) * 0.2F);
+            }
+        }
+
+        return flag;
+    }
+
+    protected boolean isImmobile() {
+        return this.isDeadOrDying() || this.isEating();
+    }
+
+    protected SoundEvent getAngrySound() {
+        return SoundEvents.LLAMA_ANGRY;
+    }
+
+    protected SoundEvent getAmbientSound() {
+        return SoundEvents.LLAMA_AMBIENT;
+    }
+
+    protected SoundEvent getHurtSound(DamageSource p_30803_) {
+        return SoundEvents.LLAMA_HURT;
+    }
+
+    protected SoundEvent getDeathSound() {
+        return SoundEvents.LLAMA_DEATH;
+    }
+
+    @Nullable
+    protected SoundEvent getEatingSound() {
+        return SoundEvents.LLAMA_EAT;
+    }
+
+    protected void playStepSound(BlockPos p_30790_, BlockState p_30791_) {
+        this.playSound(SoundEvents.LLAMA_STEP, 0.15F, 1.0F);
+    }
+
+    protected void playChestEquipsSound() {
+        this.playSound(SoundEvents.LLAMA_CHEST, 1.0F, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
+    }
+
+    public void makeMad() {
+        SoundEvent soundevent = this.getAngrySound();
+        if (soundevent != null) {
+            this.playSound(soundevent, this.getSoundVolume(), this.getVoicePitch());
+        }
+
+    }
+
+    public int getInventoryColumns() {
+        return this.getStrength();
+    }
+
+    public boolean canWearArmor() {
+        return true;
+    }
+
+    public boolean isWearingArmor() {
+        return !this.inventory.getItem(1).isEmpty();
+    }
+
+    public boolean isArmor(ItemStack p_30834_) {
+        return p_30834_.is(ItemTags.WOOL_CARPETS);
+    }
+
+    public void containerChanged(Container p_30760_) {
+        DyeColor dyecolor = this.getSwag();
+        super.containerChanged(p_30760_);
+        DyeColor dyecolor1 = this.getSwag();
+        if (this.tickCount > 20 && dyecolor1 != null && dyecolor1 != dyecolor) {
+            this.playSound(SoundEvents.LLAMA_SWAG, 0.5F, 1.0F);
+        }
+
+    }
+
+    protected void updateContainerEquipment() {
+        if (!this.level.isClientSide) {
+            super.updateContainerEquipment();
+            this.setSwag(getDyeColor(this.inventory.getItem(1)));
+        }
+    }
+
+    private void setSwag(@Nullable DyeColor p_30772_) {
+        this.entityData.set(DATA_SWAG_ID, p_30772_ == null ? -1 : p_30772_.getId());
+    }
+
+    @Nullable
+    private static DyeColor getDyeColor(ItemStack p_30836_) {
+        Block block = Block.byItem(p_30836_.getItem());
+        return block instanceof WoolCarpetBlock ? ((WoolCarpetBlock)block).getColor() : null;
+    }
+
+    @Nullable
+    public DyeColor getSwag() {
+        int i = this.entityData.get(DATA_SWAG_ID);
+        return i == -1 ? null : DyeColor.byId(i);
+    }
+
+    public int getMaxTemper() {
+        return 30;
+    }
+
+    protected double followLeashSpeed() {
+        return 2.0D;
+    }
+
+    public boolean canEatGrass() {
+        return false;
+    }
 
     //saddle
     public LivingEntity getControllingPassenger() {
@@ -113,19 +321,10 @@ public class SnailEntity extends Animal implements ItemSteerable, Saddleable, IA
         super.defineSynchedData();
         this.entityData.define(DATA_SADDLE_ID, false);
         this.entityData.define(DATA_BOOST_TIME, 0);
+        this.entityData.define(DATA_STRENGTH_ID, 0);
+        this.entityData.define(DATA_SWAG_ID, -1);
     }
-
-    public void addAdditionalSaveData(CompoundTag p_29495_) {
-        super.addAdditionalSaveData(p_29495_);
-        this.steering.addAdditionalSaveData(p_29495_);
-    }
-
-    public void readAdditionalSaveData(CompoundTag p_29478_) {
-        super.readAdditionalSaveData(p_29478_);
-        this.steering.readAdditionalSaveData(p_29478_);
-    }
-
-    public InteractionResult mobInteract(Player p_29489_, InteractionHand p_29490_) {
+          public InteractionResult mobInteract(Player p_29489_, InteractionHand p_29490_) {
         boolean flag = this.isFood(p_29489_.getItemInHand(p_29490_));
         if (!flag && this.isSaddled() && !this.isVehicle() && !p_29489_.isSecondaryUseActive()) {
             if (!this.level.isClientSide) {
@@ -160,7 +359,7 @@ public class SnailEntity extends Animal implements ItemSteerable, Saddleable, IA
         return this.steering.hasSaddle();
     }
 
-    public void equipSaddle(@Nullable SoundSource p_29476_) {
+    public void equipSaddle(@org.jetbrains.annotations.Nullable SoundSource p_29476_) {
         this.steering.setSaddle(true);
         if (p_29476_ != null) {
             this.level.playSound((Player) null, this, SoundEvents.HORSE_SADDLE, p_29476_, 0.5F, 1.0F);
@@ -275,13 +474,6 @@ public class SnailEntity extends Animal implements ItemSteerable, Saddleable, IA
     public boolean boost() {
         return this.steering.boost(this.getRandom());
     }
-//Saddle zuende
-
-    @Nullable
-    @Override
-    public AgeableMob getBreedOffspring(ServerLevel p_146743_, AgeableMob p_146744_) {
-        return null;
-    }
 
     private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
         if (event.isMoving()) {
@@ -292,10 +484,9 @@ public class SnailEntity extends Animal implements ItemSteerable, Saddleable, IA
         event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.snail.idle", ILoopType.EDefaultLoopTypes.LOOP));
         return PlayState.CONTINUE;
     }
-
     @Override
     public void registerControllers(AnimationData data) {
-        AnimationController<SnailEntity> controller = new AnimationController<>(this, "controller", 0,
+        AnimationController<SnailEntity1> controller = new AnimationController<>(this, "controller", 0,
                 this::predicate);
     }
 
@@ -303,92 +494,4 @@ public class SnailEntity extends Animal implements ItemSteerable, Saddleable, IA
     public AnimationFactory getFactory() {
         return this.factory;
     }
-
-
-    protected void playStepSound(BlockPos pos, BlockState blockIn) {
-        this.playSound(SoundEvents.SLIME_BLOCK_STEP, 0.15F, 1.0F);
-    }
-
-    protected SoundEvent getAmbientSound() {
-        return SoundEvents.SLIME_BLOCK_FALL;
-    }
-
-    protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-        return SoundEvents.SLIME_HURT;
-    }
-
-    protected SoundEvent getDeathSound() {
-        return SoundEvents.SLIME_DEATH;
-    }
-
-    protected float getSoundVolume() {
-        return 0.2F;
-    }
-
-}
-    //Taming
-/*
-    @Override
-    public InteractionResult mobInteract(Player player, InteractionHand hand) {
-        ItemStack itemstack = player.getItemInHand(hand);
-        Item item = itemstack.getItem();
-
-        Item itemForTaming = Items.OAK_LEAVES;
-
-        if (item == itemForTaming && !isTame()) {
-            if (this.level.isClientSide) {
-                return InteractionResult.CONSUME;
-            } else {
-                if (!player.getAbilities().instabuild) {
-                    itemstack.shrink(1);
-                }
-
-                if (!ForgeEventFactory.onAnimalTame(this, player)) {
-                    if (!this.level.isClientSide) {
-                        super.tame(player);
-                        this.navigation.recomputePath();
-                        this.setTarget(null);
-                        this.level.broadcastEntityEvent(this, (byte)7);
-                    }
-                }
-
-                return InteractionResult.SUCCESS;
-            }
-        }
-
-        if(isTame() && !this.level.isClientSide && hand == InteractionHand.MAIN_HAND) {
-            return InteractionResult.SUCCESS;
-        }
-
-        if (itemstack.getItem() == itemForTaming) {
-            return InteractionResult.PASS;
-        }
-
-        return super.mobInteract(player, hand);
-    }
-
-
-    @Override
-    public Team getTeam() {
-        return super.getTeam();
-    }
-
-    public boolean canBeLeashed(Player player) {
-        return true;
-    }
-
-    @Override
-    public void setTame(boolean tamed) {
-        super.setTame(tamed);
-        if (tamed) {
-            getAttribute(Attributes.MAX_HEALTH).setBaseValue(200.0D);
-            getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(0D);
-            getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue((double)0.1f);
-        } else {
-            getAttribute(Attributes.MAX_HEALTH).setBaseValue(100.0D);
-            getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(15D);
-            getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue((double)0.2f);
-        }
-    }
-}
-*/
+} */
