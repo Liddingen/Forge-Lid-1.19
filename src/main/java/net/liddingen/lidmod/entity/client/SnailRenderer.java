@@ -26,11 +26,11 @@ public class SnailRenderer extends GeoEntityRenderer<SnailEntity> {
     }
     */
     }
-
     @Override
     public ResourceLocation getTextureLocation(SnailEntity instance) {
         return new ResourceLocation(LidMod.MOD_ID, "textures/entity/snail_texture.png");
     }
+
 
     @Override
     public RenderType getRenderType(SnailEntity entity, float partialTicks, PoseStack stack,

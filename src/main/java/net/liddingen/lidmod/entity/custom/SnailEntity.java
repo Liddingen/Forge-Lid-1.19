@@ -4,6 +4,7 @@ import com.google.common.collect.Sets;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -22,14 +23,19 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.world.entity.ai.navigation.WallClimberNavigation;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.animal.frog.Frog;
+import net.minecraft.world.entity.animal.horse.AbstractChestedHorse;
+import net.minecraft.world.entity.monster.Spider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.DismountHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -47,6 +53,14 @@ import software.bernie.geckolib3.util.GeckoLibUtil;
 import java.util.Set;
 
 public class SnailEntity extends Animal implements ItemSteerable, Saddleable, IAnimatable {
+    /*Container
+    private static final EntityDataAccessor<Boolean> DATA_ID_CHEST = SynchedEntityData.defineId(AbstractChestedHorse.class, EntityDataSerializers.BOOLEAN);
+    public static final int INV_CHEST_COUNT = 15;
+    Container*/
+
+    //Climbing
+    private static final EntityDataAccessor<Byte> DATA_FLAGS_ID = SynchedEntityData.defineId(SnailEntity.class, EntityDataSerializers.BYTE);
+    //Climbing
 
     //Saddle
     private static final EntityDataAccessor<Boolean> DATA_SADDLE_ID = SynchedEntityData.defineId(SnailEntity.class, EntityDataSerializers.BOOLEAN);
@@ -113,19 +127,65 @@ public class SnailEntity extends Animal implements ItemSteerable, Saddleable, IA
         super.defineSynchedData();
         this.entityData.define(DATA_SADDLE_ID, false);
         this.entityData.define(DATA_BOOST_TIME, 0);
+        this.entityData.define(DATA_FLAGS_ID, (byte)0); //Climbing
+       // this.entityData.define(DATA_ID_CHEST, false);//Container
     }
+
+    public void tick() { //Climbing
+        super.tick();
+        if (!this.level.isClientSide) {
+            this.setClimbing(this.horizontalCollision);
+        }
+
+    }
+
+    public boolean onClimbable() {
+        return this.isClimbing();
+    } //Climbing
+
 
     public void addAdditionalSaveData(CompoundTag p_29495_) {
         super.addAdditionalSaveData(p_29495_);
         this.steering.addAdditionalSaveData(p_29495_);
+        /*p_29495_.putBoolean("ChestedHorse", this.hasChest()); //Container
+        if (this.hasChest()) { //Container
+            ListTag listtag = new ListTag();
+
+            for(int i = 2; i < this.inventory.getContainerSize(); ++i) {
+                ItemStack itemstack = this.inventory.getItem(i);
+                if (!itemstack.isEmpty()) {
+                    CompoundTag compoundtag = new CompoundTag();
+                    compoundtag.putByte("Slot", (byte)i);
+                    itemstack.save(compoundtag);
+                    listtag.add(compoundtag);
+                }
+            }
+
+            p_29495_.put("Items", listtag);
+        }*/
     }
 
     public void readAdditionalSaveData(CompoundTag p_29478_) {
         super.readAdditionalSaveData(p_29478_);
         this.steering.readAdditionalSaveData(p_29478_);
+       /* this.setChest(p_29478_.getBoolean("ChestedHorse")); //Container
+        this.createInventory();
+        if (this.hasChest()) {
+            ListTag listtag = p_29478_.getList("Items", 10);
+
+            for (int i = 0; i < listtag.size(); ++i) {
+                CompoundTag compoundtag = listtag.getCompound(i);
+                int j = compoundtag.getByte("Slot") & 255;
+                if (j >= 2 && j < this.inventory.getContainerSize()) {
+                    this.inventory.setItem(j, ItemStack.of(compoundtag));
+                }
+            }
+        }
+        this.updateContainerEquipment();*/
     }
 
     public InteractionResult mobInteract(Player p_29489_, InteractionHand p_29490_) {
+
         boolean flag = this.isFood(p_29489_.getItemInHand(p_29490_));
         if (!flag && this.isSaddled() && !this.isVehicle() && !p_29489_.isSecondaryUseActive()) {
             if (!this.level.isClientSide) {
@@ -153,6 +213,13 @@ public class SnailEntity extends Animal implements ItemSteerable, Saddleable, IA
         if (this.isSaddled()) {
             this.spawnAtLocation(Items.SADDLE);
         }
+        /*if (this.hasChest()) { //Container
+            if (!this.level.isClientSide) {
+                this.spawnAtLocation(Blocks.CHEST);
+            }
+
+            this.setChest(false);
+        } */
 
     }
 
@@ -174,8 +241,8 @@ public class SnailEntity extends Animal implements ItemSteerable, Saddleable, IA
             float f = Mth.cos(this.yBodyRot * ((float) Math.PI / 180F));
             float f1 = Mth.sin(this.yBodyRot * ((float) Math.PI / 180F));
             float f2 = 0.3F;
-            p_30830_.setPos(this.getX() + (double) (-3.1F * f1),
-                    this.getY() + this.getPassengersRidingOffset() + p_30830_.getMyRidingOffset(), this.getZ() - (double) (-3.1F * f));
+            p_30830_.setPos(this.getX() + (double) (-3.0F * f1),
+                    this.getY() + this.getPassengersRidingOffset() + p_30830_.getMyRidingOffset(), this.getZ() - (double) (-3.0F * f));
         }
     }
 
@@ -325,6 +392,75 @@ public class SnailEntity extends Animal implements ItemSteerable, Saddleable, IA
         return 0.2F;
     }
 
+//Climbing
+
+    protected PathNavigation createNavigation(Level p_33802_) {
+        return new WallClimberNavigation(this, p_33802_);
+    }
+
+public boolean isClimbing() {
+    return (this.entityData.get(DATA_FLAGS_ID) & 1) != 0;
+}
+
+    public void setClimbing(boolean p_33820_) {
+        byte b0 = this.entityData.get(DATA_FLAGS_ID);
+        if (p_33820_) {
+            b0 = (byte)(b0 | 1);
+        } else {
+            b0 = (byte)(b0 & -2);
+        }
+
+        this.entityData.set(DATA_FLAGS_ID, b0);
+    }
+
+    /*container
+    public boolean hasChest() {
+        return this.entityData.get(DATA_ID_CHEST);
+    }
+
+    public void setChest(boolean p_30505_) {
+        this.entityData.set(DATA_ID_CHEST, p_30505_);
+    }
+
+    protected int getInventorySize() {
+        return this.hasChest() ? 17 : super.getInventorySize();
+    }
+
+    public SlotAccess getSlot(int p_149479_) {
+        return p_149479_ == 499 ? new SlotAccess() {
+            public ItemStack get() {
+                return SnailEntity.this.hasChest() ? new ItemStack(Items.CHEST) : ItemStack.EMPTY;
+            }
+
+            public boolean set(ItemStack p_149485_) {
+                if (p_149485_.isEmpty()) {
+                    if (SnailEntity.this.hasChest()) {
+                        SnailEntity.this.setChest(false);
+                        SnailEntity.this.createInventory();
+                    }
+
+                    return true;
+                } else if (p_149485_.is(Items.CHEST)) {
+                    if (!SnailEntity.this.hasChest()) {
+                        SnailEntity.this.setChest(true);
+                        SnailEntity.this.createInventory();
+                    }
+
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        } : super.getSlot(p_149479_);
+    }
+
+    protected void playChestEquipsSound() {
+        this.playSound(SoundEvents.DONKEY_CHEST, 1.0F, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
+    }
+
+    public int getInventoryColumns() {
+        return 5;
+    }  */
 }
     //Taming
 /*
