@@ -1,6 +1,7 @@
 package net.liddingen.lidmod.entity.custom;
 
 import com.google.common.collect.Sets;
+import com.mojang.logging.LogUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -14,21 +15,31 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
+import net.minecraft.util.TimeUtil;
+import net.minecraft.util.valueproviders.UniformInt;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectCategory;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.ResetUniversalAngerTargetGoal;
+import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.ai.navigation.WallClimberNavigation;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.animal.frog.Frog;
 import net.minecraft.world.entity.animal.horse.AbstractChestedHorse;
 import net.minecraft.world.entity.monster.Spider;
+import net.minecraft.world.entity.monster.Witch;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.DismountHelper;
 import net.minecraft.world.item.ItemStack;
@@ -40,7 +51,11 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import software.bernie.example.entity.LEEntity;
+import software.bernie.geckolib3.core.AnimationState;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.IAnimationTickable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.builder.ILoopType;
@@ -51,12 +66,17 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 import software.bernie.geckolib3.util.GeckoLibUtil;
 
 import java.util.Set;
+import java.util.UUID;
 
-public class SnailEntity extends Animal implements ItemSteerable, Saddleable, IAnimatable {
+public class SnailEntity extends Animal implements ItemSteerable, Saddleable, IAnimatable, IAnimationTickable, NeutralMob {
     /*Container
     private static final EntityDataAccessor<Boolean> DATA_ID_CHEST = SynchedEntityData.defineId(AbstractChestedHorse.class, EntityDataSerializers.BOOLEAN);
     public static final int INV_CHEST_COUNT = 15;
     Container*/
+
+    //Thunder
+    private static final Logger LOGGER = LogUtils.getLogger();
+    //Thunder
 
     //Climbing
     private static final EntityDataAccessor<Byte> DATA_FLAGS_ID = SynchedEntityData.defineId(SnailEntity.class, EntityDataSerializers.BYTE);
@@ -69,10 +89,42 @@ public class SnailEntity extends Animal implements ItemSteerable, Saddleable, IA
             Items.ACACIA_LEAVES, Items.JUNGLE_LEAVES, Items.MANGROVE_LEAVES);
     private final ItemBasedSteering steering = new ItemBasedSteering(this.entityData, DATA_BOOST_TIME, DATA_SADDLE_ID);
     //Saddle
-
     private AnimationFactory factory = GeckoLibUtil.createFactory(this);
+    //Anger
+    private int remainingPersistentAngerTime;
+    private static final UniformInt PERSISTENT_ANGER_TIME = TimeUtil.rangeOfSeconds(20, 39);
+    @Nullable
+    private UUID persistentAngerTarget;
+    private int playFirstAngerSoundIn;
+    private static final UniformInt FIRST_ANGER_SOUND_DELAY = TimeUtil.rangeOfSeconds(0, 1);
 
-    public SnailEntity(EntityType<? extends Animal> entityType, Level level) {
+
+    private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
+        if (event.isMoving()) {
+            event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.snail.walk", ILoopType.EDefaultLoopTypes.LOOP));
+            return PlayState.CONTINUE;
+        }
+
+        event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.snail.idle", ILoopType.EDefaultLoopTypes.LOOP));
+        return PlayState.CONTINUE;
+    }
+
+    private PlayState attackpredicate(AnimationEvent event) {
+        if(this.swinging && event.getController().getAnimationState().equals(AnimationState.Stopped)) {
+            event.getController().markNeedsReload();
+            event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.snail.attack", ILoopType.EDefaultLoopTypes.PLAY_ONCE));
+        }
+        return PlayState.CONTINUE;
+    }
+
+
+    @Override
+    public void registerControllers(AnimationData data) {
+        data.addAnimationController(new AnimationController<SnailEntity>(this, "controller", 0, this::predicate));
+        data.addAnimationController(new AnimationController<SnailEntity>(this, "attackController", 0, this::attackpredicate));
+    }
+
+       public SnailEntity(EntityType<? extends Animal> entityType, Level level) {
         super(entityType, level);
     }
 
@@ -95,8 +147,46 @@ public class SnailEntity extends Animal implements ItemSteerable, Saddleable, IA
         this.goalSelector.addGoal(5, new LookAtPlayerGoal(this, Player.class, 6.0F));
         this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
 
-        this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, Frog.class, true));
-        this.targetSelector.addGoal(5, (new HurtByTargetGoal(this)).setAlertOthers());
+        this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Frog.class, true));
+        this.targetSelector.addGoal(2, (new HurtByTargetGoal(this)).setAlertOthers());
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, this::isAngryAt));
+        this.targetSelector.addGoal(4, new ResetUniversalAngerTargetGoal<>(this, true));
+    }
+    //Anger
+    private void playAngerSound() {
+        this.playSound(SoundEvents.SLIME_HURT, this.getSoundVolume() * 2.0F, this.getVoicePitch() * 1.8F);
+    } //not Working
+
+    public void setTarget(@Nullable LivingEntity p_34478_) {
+
+        if (p_34478_ instanceof Player) {
+            this.setLastHurtByPlayer((Player)p_34478_);
+        }
+
+        super.setTarget(p_34478_);
+    }
+
+    public void startPersistentAngerTimer() {
+        this.setRemainingPersistentAngerTime(PERSISTENT_ANGER_TIME.sample(this.random));
+    }
+
+    public void setRemainingPersistentAngerTime(int p_34448_) {
+        this.remainingPersistentAngerTime = p_34448_;
+    }
+
+
+   @Nullable
+    public UUID getPersistentAngerTarget() {
+        return this.persistentAngerTarget;
+    }
+
+    @Override
+    public void setPersistentAngerTarget(@javax.annotation.Nullable UUID p_34444_) {
+        this.persistentAngerTarget = p_34444_;
+    }
+
+    public int getRemainingPersistentAngerTime() {
+        return this.remainingPersistentAngerTime;
     }
 
 
@@ -147,6 +237,7 @@ public class SnailEntity extends Animal implements ItemSteerable, Saddleable, IA
     public void addAdditionalSaveData(CompoundTag p_29495_) {
         super.addAdditionalSaveData(p_29495_);
         this.steering.addAdditionalSaveData(p_29495_);
+        this.addPersistentAngerSaveData(p_29495_); //Anger
         /*p_29495_.putBoolean("ChestedHorse", this.hasChest()); //Container
         if (this.hasChest()) { //Container
             ListTag listtag = new ListTag();
@@ -168,6 +259,7 @@ public class SnailEntity extends Animal implements ItemSteerable, Saddleable, IA
     public void readAdditionalSaveData(CompoundTag p_29478_) {
         super.readAdditionalSaveData(p_29478_);
         this.steering.readAdditionalSaveData(p_29478_);
+        this.readPersistentAngerSaveData(this.level, p_29478_); //Anger
        /* this.setChest(p_29478_.getBoolean("ChestedHorse")); //Container
         this.createInventory();
         if (this.hasChest()) {
@@ -350,25 +442,14 @@ public class SnailEntity extends Animal implements ItemSteerable, Saddleable, IA
         return null;
     }
 
-    private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-        if (event.isMoving()) {
-            event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.snail.walk", ILoopType.EDefaultLoopTypes.LOOP));
-            return PlayState.CONTINUE;
-        }
-
-        event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.snail.idle", ILoopType.EDefaultLoopTypes.LOOP));
-        return PlayState.CONTINUE;
-    }
-
-    @Override
-    public void registerControllers(AnimationData data) {
-        AnimationController<SnailEntity> controller = new AnimationController<>(this, "controller", 0,
-                this::predicate);
-    }
-
     @Override
     public AnimationFactory getFactory() {
         return this.factory;
+    }
+
+    @Override
+    public int tickTimer() {
+        return tickCount;
     }
 
 
@@ -413,6 +494,12 @@ public boolean isClimbing() {
         this.entityData.set(DATA_FLAGS_ID, b0);
     }
 
+    //Thunder Hit
+
+    public void thunderHit(ServerLevel p_35409_, LightningBolt p_35410_) {
+        addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED,1440,60));
+        super.thunderHit(p_35409_, p_35410_);
+    }
     /*container
     public boolean hasChest() {
         return this.entityData.get(DATA_ID_CHEST);

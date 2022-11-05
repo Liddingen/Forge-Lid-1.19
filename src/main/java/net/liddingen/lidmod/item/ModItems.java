@@ -2,10 +2,7 @@ package net.liddingen.lidmod.item;
 
 import net.liddingen.lidmod.LidMod;
 import net.liddingen.lidmod.entity.ModEntityTypes;
-import net.liddingen.lidmod.item.custom.InstructionPaper;
-import net.liddingen.lidmod.item.custom.InstructionPaperFour;
-import net.liddingen.lidmod.item.custom.InstructionPaperThree;
-import net.liddingen.lidmod.item.custom.InstructionPaperTwo;
+import net.liddingen.lidmod.item.custom.*;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.eventbus.api.IEventBus;
