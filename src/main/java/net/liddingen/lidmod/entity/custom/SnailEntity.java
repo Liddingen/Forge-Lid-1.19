@@ -5,7 +5,6 @@ import com.mojang.logging.LogUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -17,12 +16,9 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.TimeUtil;
 import net.minecraft.util.valueproviders.UniformInt;
-import net.minecraft.world.Difficulty;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.effect.MobEffect;
-import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
@@ -32,27 +28,21 @@ import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.ResetUniversalAngerTargetGoal;
-import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.ai.navigation.WallClimberNavigation;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.animal.frog.Frog;
-import net.minecraft.world.entity.animal.horse.AbstractChestedHorse;
-import net.minecraft.world.entity.monster.Spider;
-import net.minecraft.world.entity.monster.Witch;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.DismountHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
-import software.bernie.example.entity.LEEntity;
 import software.bernie.geckolib3.core.AnimationState;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.IAnimationTickable;
@@ -158,7 +148,7 @@ public class SnailEntity extends Animal implements ItemSteerable, Saddleable, IA
         this.playSound(SoundEvents.SLIME_HURT, this.getSoundVolume() * 2.0F, this.getVoicePitch() * 1.8F);
     } //not Working
 
-    public void setTarget(@Nullable LivingEntity p_34478_) {
+       public void setTarget(@Nullable LivingEntity p_34478_) {
 
         if (p_34478_ instanceof Player) {
             this.setLastHurtByPlayer((Player)p_34478_);
@@ -277,20 +267,20 @@ public class SnailEntity extends Animal implements ItemSteerable, Saddleable, IA
         this.updateContainerEquipment();*/
     }
 
-    public InteractionResult mobInteract(Player p_29489_, InteractionHand p_29490_) {
+    public InteractionResult mobInteract(Player player, InteractionHand interactionHand) {
 
-        boolean flag = this.isFood(p_29489_.getItemInHand(p_29490_));
-        if (!flag && this.isSaddled() && !this.isVehicle() && !p_29489_.isSecondaryUseActive()) {
+        boolean flag = this.isFood(player.getItemInHand(interactionHand));
+        if (!flag && this.isSaddled() && !this.isVehicle() && !player.isSecondaryUseActive()) {
             if (!this.level.isClientSide) {
-                p_29489_.startRiding(this);
+                player.startRiding(this);
             }
 
             return InteractionResult.sidedSuccess(this.level.isClientSide);
         } else {
-            InteractionResult interactionresult = super.mobInteract(p_29489_, p_29490_);
+            InteractionResult interactionresult = super.mobInteract(player, interactionHand);
             if (!interactionresult.consumesAction()) {
-                ItemStack itemstack = p_29489_.getItemInHand(p_29490_);
-                return itemstack.is(Items.SADDLE) ? itemstack.interactLivingEntity(p_29489_, this, p_29490_) : InteractionResult.PASS;
+                ItemStack itemstack = player.getItemInHand(interactionHand);
+                return itemstack.is(Items.SADDLE) ? itemstack.interactLivingEntity(player, this, interactionHand) : InteractionResult.PASS;
             } else {
                 return interactionresult;
             }
@@ -418,7 +408,6 @@ public class SnailEntity extends Animal implements ItemSteerable, Saddleable, IA
     public void travel(Vec3 p_29506_) {
         this.travel(this, this.steering, p_29506_);
     }
-
 
     public boolean isFood(ItemStack p_29508_) {
         return FOOD_ITEMS.test(p_29508_);

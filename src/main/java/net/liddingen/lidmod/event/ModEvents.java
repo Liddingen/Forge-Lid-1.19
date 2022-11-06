@@ -5,6 +5,7 @@ import net.liddingen.lidmod.LidMod;
 import net.liddingen.lidmod.block.ModBlocks;
 import net.liddingen.lidmod.entity.ModEntityTypes;
 import net.liddingen.lidmod.entity.custom.SnailEntity;
+import net.liddingen.lidmod.entity.custom.SnailyEntity;
 import net.liddingen.lidmod.item.ModItems;
 import net.liddingen.lidmod.villager.ModVillagers;
 import net.minecraft.world.entity.npc.VillagerTrades;
@@ -145,6 +146,7 @@ public class ModEvents {
         @SubscribeEvent
         public static void entityAttributeEvent(EntityAttributeCreationEvent event) {
             event.put(ModEntityTypes.SNAIL.get(), SnailEntity.setAttributes());
+            event.put(ModEntityTypes.SNAILY.get(), SnailyEntity.setAttributes());
         }
     }
 }

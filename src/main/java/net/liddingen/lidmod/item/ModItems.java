@@ -14,7 +14,6 @@ public class ModItems {
     public static final DeferredRegister<Item> ITEMS =
             DeferredRegister.create(ForgeRegistries.ITEMS, LidMod.MOD_ID);
 
-
     public static final RegistryObject<Item> ELEKTRUM = ITEMS.register("elektrum",
             () -> new Item(new Item.Properties().tab(ModCreativeModeTab.LID_TAB)));
     public static final RegistryObject<Item> RAW_ELEKTRUM = ITEMS.register("raw_elektrum",
@@ -31,6 +30,11 @@ public class ModItems {
     public static final RegistryObject<Item> SNAIL_SPAWN_EGG = ITEMS.register("snail_spawn_egg",
             () -> new ForgeSpawnEggItem(ModEntityTypes.SNAIL, 0xb0b58a, 0x83663c,
                     new Item.Properties().tab(ModCreativeModeTab.LID_TAB)));
+    public static final RegistryObject<Item> SNAILY_SPAWN_EGG = ITEMS.register("snaily_spawn_egg",
+            () -> new ForgeSpawnEggItem(ModEntityTypes.SNAILY, 0xA06F40, 0xD3D699,
+                    new Item.Properties().tab(ModCreativeModeTab.LID_TAB)));
+    public static final RegistryObject<Item> SNAIL_BOWL = ITEMS.register("snail_bowl",
+            () -> new Item(new Item.Properties().tab(ModCreativeModeTab.LID_TAB).stacksTo(16)));
 
     public static final RegistryObject<Item> INSTRUCTION_PAPER = ITEMS.register("instruction_paper",
             () -> new InstructionPaper(new Item.Properties().tab(ModCreativeModeTab.LID_TAB).stacksTo(1)));

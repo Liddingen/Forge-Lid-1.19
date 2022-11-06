@@ -5,6 +5,7 @@ import net.liddingen.lidmod.block.ModBlocks;
 import net.liddingen.lidmod.block.entity.ModBlockEntities;
 import net.liddingen.lidmod.entity.ModEntityTypes;
 import net.liddingen.lidmod.entity.client.SnailRenderer;
+import net.liddingen.lidmod.entity.client.SnailyRenderer;
 import net.liddingen.lidmod.item.ModItems;
 import net.liddingen.lidmod.networking.ModMessages;
 import net.liddingen.lidmod.painting.ModPaintings;
@@ -71,6 +72,7 @@ public class LidMod {
             MenuScreens.register(ModMenuTypes.NETHERITE_FRAME_MENU.get(), NetheriteFrameScreen::new);
 
             EntityRenderers.register(ModEntityTypes.SNAIL.get(), SnailRenderer::new);
+            EntityRenderers.register(ModEntityTypes.SNAILY.get(), SnailyRenderer::new);
         }
     }
 }
