@@ -109,10 +109,11 @@ public class SnailEntity extends Animal implements ItemSteerable, Saddleable, IA
         return PlayState.CONTINUE;
     }
 
-    private PlayState attackpredicate(AnimationEvent event) {
+    private PlayState attackPredicate(AnimationEvent event) {
         if(this.swinging && event.getController().getAnimationState().equals(AnimationState.Stopped)) {
             event.getController().markNeedsReload();
             event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.snail.attack", ILoopType.EDefaultLoopTypes.PLAY_ONCE));
+            this.swinging = false;
         }
         return PlayState.CONTINUE;
     }
@@ -120,8 +121,8 @@ public class SnailEntity extends Animal implements ItemSteerable, Saddleable, IA
 
     @Override
     public void registerControllers(AnimationData data) {
-        data.addAnimationController(new AnimationController<SnailEntity>(this, "controller", 0, this::predicate));
-        data.addAnimationController(new AnimationController<SnailEntity>(this, "attackController", 0, this::attackpredicate));
+        data.addAnimationController(new AnimationController(this, "controller", 0, this::predicate));
+        data.addAnimationController(new AnimationController(this, "attackController", 0, this::attackPredicate));
     }
 
        public SnailEntity(EntityType<? extends Animal> entityType, Level level) {
