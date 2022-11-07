@@ -1,5 +1,28 @@
 {
   "variants": {
-    "": { "model":  "lidmod:block/slime_trail" }
+    "layers=1": {
+      "model": "lidmod:block/slime_trail_height2"
+    },
+    "layers=2": {
+      "model": "lidmod:block/slime_trail_height4"
+    },
+    "layers=3": {
+      "model": "lidmod:block/slime_trail_height6"
+    },
+    "layers=4": {
+      "model": "lidmod:block/slime_trail_height8"
+    },
+    "layers=5": {
+      "model": "lidmod:block/slime_trail_height10"
+    },
+    "layers=6": {
+      "model": "lidmod:block/slime_trail_height12"
+    },
+    "layers=7": {
+      "model": "lidmod:block/slime_trail_height14"
+    },
+    "layers=8": {
+      "model": "minecraft:block/slime_block"
+    }
   }
 }

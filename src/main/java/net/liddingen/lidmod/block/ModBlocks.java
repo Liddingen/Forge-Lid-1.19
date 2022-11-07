@@ -70,10 +70,8 @@ public static final RegistryObject<Block> CHARGER = registerBlock("charger",
                     .strength(5f).requiresCorrectToolForDrops().noOcclusion()), ModCreativeModeTab.LID_TAB);
 
     public static final RegistryObject<Block> SLIME_TRAIL = registerBlock("slime_trail",
-            () -> new Block(BlockBehaviour.Properties.of(Material.SPONGE)
+            () -> new SlimeTrail(BlockBehaviour.Properties.of(Material.SPONGE)
                     .strength(1f).requiresCorrectToolForDrops().noOcclusion()), ModCreativeModeTab.LID_TAB);
-
-
 
 
 private static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> block, CreativeModeTab tab) {
