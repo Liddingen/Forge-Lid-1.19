@@ -25,6 +25,7 @@
   "block.lidmod.accumulator": "Accumulator",
   "block.lidmod.transformer": "Transformer",
   "block.lidmod.compress_station": "Compress Station",
+  "block.lidmod.slime_trail": "Slime Trail",
 
 
   "entity.minecraft.villager.lidmod.rageful_revenger": "Rageful Revenger",

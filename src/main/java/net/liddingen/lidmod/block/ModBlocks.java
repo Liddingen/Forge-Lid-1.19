@@ -69,6 +69,10 @@ public static final RegistryObject<Block> CHARGER = registerBlock("charger",
             () -> new CompressStation(BlockBehaviour.Properties.of(Material.HEAVY_METAL)
                     .strength(5f).requiresCorrectToolForDrops().noOcclusion()), ModCreativeModeTab.LID_TAB);
 
+    public static final RegistryObject<Block> SLIME_TRAIL = registerBlock("slime_trail",
+            () -> new Block(BlockBehaviour.Properties.of(Material.SPONGE)
+                    .strength(1f).requiresCorrectToolForDrops().noOcclusion()), ModCreativeModeTab.LID_TAB);
+
 
 
 

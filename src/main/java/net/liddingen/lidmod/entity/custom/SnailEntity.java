@@ -2,6 +2,7 @@ package net.liddingen.lidmod.entity.custom;
 
 import com.google.common.collect.Sets;
 import com.mojang.logging.LogUtils;
+import net.liddingen.lidmod.block.ModBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -38,7 +39,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
@@ -489,6 +493,39 @@ public boolean isClimbing() {
     public void thunderHit(ServerLevel p_35409_, LightningBolt p_35410_) {
         addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED,1440,60));
         super.thunderHit(p_35409_, p_35410_);
+    }
+    //Thunder HIt
+
+    public void aiStep() {
+        super.aiStep();
+        if (!this.level.isClientSide) {
+            int i = Mth.floor(this.getX());
+            int j = Mth.floor(this.getY());
+            int k = Mth.floor(this.getZ());
+            BlockPos blockpos = new BlockPos(i, j, k);
+            Biome biome = this.level.getBiome(blockpos).value();
+            if (biome.shouldSnowGolemBurn(blockpos)) {
+                this.hurt(DamageSource.ON_FIRE, 1.0F);
+            }
+
+            if (!net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.level, this)) {
+                return;
+            }
+
+            BlockState blockstate = ModBlocks.SLIME_TRAIL.get().defaultBlockState();
+
+            for(int l = 0; l < 4; ++l) {
+                i = Mth.floor(this.getX() + (double)((float)(l % 2 * 2 - 1) * 0.25F));
+                j = Mth.floor(this.getY());
+                k = Mth.floor(this.getZ() + (double)((float)(l / 2 % 2 * 2 - 1) * 0.25F));
+                BlockPos blockpos1 = new BlockPos(i, j, k);
+                if (this.level.isEmptyBlock(blockpos1) && blockstate.canSurvive(this.level, blockpos1)) {
+                    this.level.setBlockAndUpdate(blockpos1, blockstate);
+                    this.level.gameEvent(GameEvent.BLOCK_PLACE, blockpos1, GameEvent.Context.of(this, blockstate));
+                }
+            }
+        }
+
     }
     /*container
     public boolean hasChest() {
