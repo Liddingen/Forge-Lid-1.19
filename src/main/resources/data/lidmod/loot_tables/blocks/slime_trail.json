@@ -21,7 +21,7 @@
                   "type": "minecraft:item",
                   "conditions": [
                     {
-                      "block": "lidmod:snail_trail",
+                      "block": "lidmod:slime_trail",
                       "condition": "minecraft:block_state_property",
                       "properties": {
                         "layers": "1"
@@ -41,7 +41,7 @@
                   "type": "minecraft:item",
                   "conditions": [
                     {
-                      "block": "lidmod:snail_trail",
+                      "block": "lidmod:slime_trail",
                       "condition": "minecraft:block_state_property",
                       "properties": {
                         "layers": "2"
@@ -61,7 +61,7 @@
                   "type": "minecraft:item",
                   "conditions": [
                     {
-                      "block": "lidmod:snail_trail",
+                      "block": "lidmod:slime_trail",
                       "condition": "minecraft:block_state_property",
                       "properties": {
                         "layers": "3"
@@ -81,7 +81,7 @@
                   "type": "minecraft:item",
                   "conditions": [
                     {
-                      "block": "lidmod:snail_trail",
+                      "block": "lidmod:slime_trail",
                       "condition": "minecraft:block_state_property",
                       "properties": {
                         "layers": "4"
@@ -101,7 +101,7 @@
                   "type": "minecraft:item",
                   "conditions": [
                     {
-                      "block": "lidmod:snail_trail",
+                      "block": "lidmod:slime_trail",
                       "condition": "minecraft:block_state_property",
                       "properties": {
                         "layers": "5"
@@ -121,7 +121,7 @@
                   "type": "minecraft:item",
                   "conditions": [
                     {
-                      "block": "lidmod:snail_trail",
+                      "block": "lidmod:slime_trail",
                       "condition": "minecraft:block_state_property",
                       "properties": {
                         "layers": "6"
@@ -141,7 +141,7 @@
                   "type": "minecraft:item",
                   "conditions": [
                     {
-                      "block": "lidmod:snail_trail",
+                      "block": "lidmod:slime_trail",
                       "condition": "minecraft:block_state_property",
                       "properties": {
                         "layers": "7"
@@ -161,7 +161,7 @@
                   "type": "minecraft:item",
                   "conditions": [
                     {
-                      "block": "lidmod:snail_trail",
+                      "block": "lidmod:slime_trail",
                       "condition": "minecraft:block_state_property",
                       "properties": {
                         "layers": "8"
@@ -204,7 +204,7 @@
                   "type": "minecraft:item",
                   "conditions": [
                     {
-                      "block": "lidmod:snail_trail",
+                      "block": "lidmod:slime_trail",
                       "condition": "minecraft:block_state_property",
                       "properties": {
                         "layers": "1"
@@ -218,13 +218,13 @@
                       "function": "minecraft:set_count"
                     }
                   ],
-                  "name": "lidmod:snail_trail"
+                  "name": "lidmod:slime_trail"
                 },
                 {
                   "type": "minecraft:item",
                   "conditions": [
                     {
-                      "block": "lidmod:snail_trail",
+                      "block": "lidmod:slime_trail",
                       "condition": "minecraft:block_state_property",
                       "properties": {
                         "layers": "2"
@@ -238,13 +238,13 @@
                       "function": "minecraft:set_count"
                     }
                   ],
-                  "name": "lidmod:snail_trail"
+                  "name": "lidmod:slime_trail"
                 },
                 {
                   "type": "minecraft:item",
                   "conditions": [
                     {
-                      "block": "lidmod:snail_trail",
+                      "block": "lidmod:slime_trail",
                       "condition": "minecraft:block_state_property",
                       "properties": {
                         "layers": "3"
@@ -258,13 +258,13 @@
                       "function": "minecraft:set_count"
                     }
                   ],
-                  "name": "lidmod:snail_trail"
+                  "name": "lidmod:slime_trail"
                 },
                 {
                   "type": "minecraft:item",
                   "conditions": [
                     {
-                      "block": "lidmod:snail_trail",
+                      "block": "lidmod:slime_trail",
                       "condition": "minecraft:block_state_property",
                       "properties": {
                         "layers": "4"
@@ -278,13 +278,13 @@
                       "function": "minecraft:set_count"
                     }
                   ],
-                  "name": "lidmod:snail_trail"
+                  "name": "lidmod:slime_trail"
                 },
                 {
                   "type": "minecraft:item",
                   "conditions": [
                     {
-                      "block": "lidmod:snail_trail",
+                      "block": "lidmod:slime_trail",
                       "condition": "minecraft:block_state_property",
                       "properties": {
                         "layers": "5"
@@ -298,13 +298,13 @@
                       "function": "minecraft:set_count"
                     }
                   ],
-                  "name": "lidmod:snail_trail"
+                  "name": "lidmod:slime_trail"
                 },
                 {
                   "type": "minecraft:item",
                   "conditions": [
                     {
-                      "block": "lidmod:snail_trail",
+                      "block": "lidmod:slime_trail",
                       "condition": "minecraft:block_state_property",
                       "properties": {
                         "layers": "6"
@@ -318,13 +318,13 @@
                       "function": "minecraft:set_count"
                     }
                   ],
-                  "name": "lidmod:snail_trail"
+                  "name": "lidmod:slime_trail"
                 },
                 {
                   "type": "minecraft:item",
                   "conditions": [
                     {
-                      "block": "lidmod:snail_trail",
+                      "block": "lidmod:slime_trail",
                       "condition": "minecraft:block_state_property",
                       "properties": {
                         "layers": "7"
@@ -338,7 +338,7 @@
                       "function": "minecraft:set_count"
                     }
                   ],
-                  "name": "lidmod:snail_trail"
+                  "name": "lidmod:slime_trail"
                 },
                 {
                   "type": "minecraft:item",
