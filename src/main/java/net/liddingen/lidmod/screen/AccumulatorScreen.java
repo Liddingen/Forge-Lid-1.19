@@ -15,6 +15,10 @@ public class AccumulatorScreen extends AbstractContainerScreen<AccumulatorMenu> 
 
     public AccumulatorScreen(AccumulatorMenu menu, Inventory inventory, Component component) {
         super(menu, inventory, component);
+        this.titleLabelX = 60;
+        this.titleLabelY = 6;
+        this.inventoryLabelY = 73;
+        this.inventoryLabelX = 7;
     }
 
     @Override

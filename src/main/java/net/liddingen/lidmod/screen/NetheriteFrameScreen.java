@@ -15,6 +15,10 @@ public class NetheriteFrameScreen extends AbstractContainerScreen<NetheriteFrame
 
     public NetheriteFrameScreen(NetheriteFrameMenu menu, Inventory inventory, Component component) {
         super(menu, inventory, component);
+        this.titleLabelX = 51;
+        this.titleLabelY = 6;
+        this.inventoryLabelY = 73;
+        this.inventoryLabelX = 7;
     }
 
     @Override
