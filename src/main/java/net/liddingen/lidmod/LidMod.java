@@ -64,7 +64,7 @@ public class LidMod {
         event.enqueueWork(() -> {
             SpawnPlacements.register(ModEntityTypes.SNAILY.get(),
                     SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                    Animal::checkAnimalSpawnRules);
+                    Animal::checkMobSpawnRules);
 
             ModMessages.register();
             ModVillagers.registerPOIs();

@@ -5,8 +5,8 @@
     "minecraft:mangrove_swamp"
   ],
   "spawners": {
-    "type": "lidmod:snaily_entity",
-    "weight": 200,
+    "type": "lidmod:snaily",
+    "weight": 150,
     "minCount": 2,
     "maxCount": 10
   }
