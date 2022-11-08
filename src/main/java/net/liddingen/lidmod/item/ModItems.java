@@ -3,7 +3,11 @@ package net.liddingen.lidmod.item;
 import net.liddingen.lidmod.LidMod;
 import net.liddingen.lidmod.entity.ModEntityTypes;
 import net.liddingen.lidmod.item.custom.*;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.MobBucketItem;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
@@ -33,8 +37,10 @@ public class ModItems {
     public static final RegistryObject<Item> SNAILY_SPAWN_EGG = ITEMS.register("snaily_spawn_egg",
             () -> new ForgeSpawnEggItem(ModEntityTypes.SNAILY, 0xA06F40, 0xD3D699,
                     new Item.Properties().tab(ModCreativeModeTab.LID_TAB)));
-    public static final RegistryObject<Item> SNAIL_BOWL = ITEMS.register("snail_bowl",
-            () -> new Item(new Item.Properties().tab(ModCreativeModeTab.LID_TAB).stacksTo(16)));
+    @Deprecated
+    public static final RegistryObject<MobBucketItem> SNAIL_BUCKET = ITEMS.register("snail_bucket",
+            () -> new MobBucketItem(ModEntityTypes.SNAILY.get(), Fluids.WATER, SoundEvents.SLIME_SQUISH_SMALL,
+                    new Item.Properties().tab(ModCreativeModeTab.LID_TAB).craftRemainder(Items.BUCKET).stacksTo(1)));
 
     public static final RegistryObject<Item> INSTRUCTION_PAPER = ITEMS.register("instruction_paper",
             () -> new InstructionPaper(new Item.Properties().tab(ModCreativeModeTab.LID_TAB).stacksTo(1)));

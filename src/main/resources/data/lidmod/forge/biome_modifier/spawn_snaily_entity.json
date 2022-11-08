@@ -1,0 +1,13 @@
+{
+  "type": "forge:add_spawns",
+  "biomes": [
+    "minecraft:swamp",
+    "minecraft:mangrove_swamp"
+  ],
+  "spawners": {
+    "type": "lidmod:snaily_entity",
+    "weight": 200,
+    "minCount": 2,
+    "maxCount": 10
+  }
+}

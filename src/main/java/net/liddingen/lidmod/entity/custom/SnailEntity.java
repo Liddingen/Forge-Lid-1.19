@@ -147,6 +147,9 @@ public class SnailEntity extends Animal implements ItemSteerable, Saddleable, IA
         this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, this::isAngryAt));
         this.targetSelector.addGoal(4, new ResetUniversalAngerTargetGoal<>(this, true));
     }
+    public double getMeleeAttackRangeSqr(LivingEntity livingEntity) {
+        return 0.01D + (double)livingEntity.getBbWidth() * 0.01D;
+    }
     //Anger
     private void playAngerSound() {
         this.playSound(SoundEvents.SLIME_HURT, this.getSoundVolume() * 2.0F, this.getVoicePitch() * 1.8F);
@@ -176,7 +179,7 @@ public class SnailEntity extends Animal implements ItemSteerable, Saddleable, IA
     }
 
     @Override
-    public void setPersistentAngerTarget(@javax.annotation.Nullable UUID p_34444_) {
+    public void setPersistentAngerTarget(@Nullable UUID p_34444_) {
         this.persistentAngerTarget = p_34444_;
     }
 

@@ -1,20 +1,20 @@
 package net.liddingen.lidmod.entity.custom;
 
-import com.mojang.serialization.DataResult;
-import com.mojang.serialization.Dynamic;
 import net.liddingen.lidmod.entity.ModEntityTypes;
 import net.liddingen.lidmod.item.ModItems;
-import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.BiomeTags;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
@@ -26,24 +26,21 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
-import net.minecraft.world.entity.ai.navigation.PathNavigation;
-import net.minecraft.world.entity.ai.navigation.WallClimberNavigation;
-import net.minecraft.world.entity.ai.village.ReputationEventType;
 import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.entity.animal.Bucketable;
+import net.minecraft.world.entity.animal.FrogVariant;
+import net.minecraft.world.entity.animal.MushroomCow;
+import net.minecraft.world.entity.animal.axolotl.Axolotl;
 import net.minecraft.world.entity.animal.frog.Frog;
-import net.minecraft.world.entity.monster.ZombieVillager;
-import net.minecraft.world.entity.npc.Villager;
-import net.minecraft.world.entity.npc.VillagerData;
-import net.minecraft.world.entity.npc.VillagerProfession;
-import net.minecraft.world.entity.npc.VillagerType;
+import net.minecraft.world.entity.animal.frog.FrogAi;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemUtils;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.minecraft.world.item.trading.MerchantOffers;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.BedBlock;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -62,7 +59,7 @@ import software.bernie.geckolib3.util.GeckoLibUtil;
 
 import java.util.UUID;
 
-public class SnailyEntity extends Animal implements IAnimatable, IAnimationTickable{
+public class SnailyEntity extends Animal implements IAnimatable, IAnimationTickable, Bucketable{
     //Converting
     @Nullable
     private UUID conversionStarter;
@@ -70,9 +67,9 @@ public class SnailyEntity extends Animal implements IAnimatable, IAnimationTicka
     private static final int SNAIL_ENTITY_CONVERSION_WAIT_MIN = 1000;
     private static final int SNAIL_ENTITY_CONVERSION_WAIT_MAX = 2000;
     private static final EntityDataAccessor<Boolean> DATA_CONVERTING_ID = SynchedEntityData.defineId(SnailyEntity.class, EntityDataSerializers.BOOLEAN);
-    //private static final EntityDataAccessor<SnailyEntity> DATA_SNAIL_ENTITY_DATA = SynchedEntityData.defineId(SnailyEntity.class, EntityDataSerializers.SNAIL_ENTITY);
     private int snailXp;
     //Converting
+    private static final EntityDataAccessor<Boolean> FROM_BUCKET = SynchedEntityData.defineId(Axolotl.class, EntityDataSerializers.BOOLEAN);
 
     private AnimationFactory factory = GeckoLibUtil.createFactory(this);
 
@@ -174,11 +171,12 @@ public class SnailyEntity extends Animal implements IAnimatable, IAnimationTicka
     protected void defineSynchedData() {
         super.defineSynchedData();
         this.entityData.define(DATA_CONVERTING_ID, false);
-        //this.entityData.define(DATA_SNAILY_DATA, new VillagerData(VillagerType.PLAINS, VillagerProfession.NONE, 1));
+        this.entityData.define(FROM_BUCKET, false);
     }
 
     public void addAdditionalSaveData(CompoundTag tag) {
         super.addAdditionalSaveData(tag);
+        tag.putBoolean("FromBucket", this.fromBucket());
         tag.putInt("ConversionTime", this.isConverting() ? this.snailEntityConversionTime : -1);
         if (this.conversionStarter != null) {
             tag.putUUID("ConversionPlayer", this.conversionStarter);
@@ -188,6 +186,7 @@ public class SnailyEntity extends Animal implements IAnimatable, IAnimationTicka
 
     public void readAdditionalSaveData(CompoundTag tag) {
         super.readAdditionalSaveData(tag);
+        this.setFromBucket(tag.getBoolean("FromBucket"));
 
         if (tag.contains("ConversionTime", 99) && tag.getInt("ConversionTime") > -1) {
             this.startConverting(tag.hasUUID("ConversionPlayer") ? tag.getUUID("ConversionPlayer") : null, tag.getInt("ConversionTime"));
@@ -213,13 +212,7 @@ public class SnailyEntity extends Animal implements IAnimatable, IAnimationTicka
 
     public InteractionResult mobInteract(Player player, InteractionHand interactionHand) {
         ItemStack itemstack = player.getItemInHand(interactionHand);
-        if (itemstack.is(Items.BOWL) && !this.isBaby()) {
-            player.playSound(SoundEvents.MOOSHROOM_MILK_SUSPICIOUSLY, 1.0F, 1.0F);
-            ItemStack itemstack1 = ItemUtils.createFilledResult(itemstack, player, ModItems.SNAIL_BOWL.get().getDefaultInstance());
-            player.setItemInHand(interactionHand, itemstack1);
-            return InteractionResult.sidedSuccess(this.level.isClientSide);
-
-        } else if (itemstack.is(Items.ENCHANTED_GOLDEN_APPLE)) {
+         if (itemstack.is(Items.ENCHANTED_GOLDEN_APPLE)) {
                 if (!player.getAbilities().instabuild) {
                     itemstack.shrink(1);
                 }
@@ -230,7 +223,8 @@ public class SnailyEntity extends Animal implements IAnimatable, IAnimationTicka
                 return InteractionResult.SUCCESS;
 
         } else {
-            return super.mobInteract(player, interactionHand);
+            //return super.mobInteract(player, interactionHand);
+            return Bucketable.bucketMobPickup(player, interactionHand, this).orElse(super.mobInteract(player, interactionHand));
         }
     }
 
@@ -312,6 +306,52 @@ public class SnailyEntity extends Animal implements IAnimatable, IAnimationTicka
     @Override
     public AgeableMob getBreedOffspring(ServerLevel level, AgeableMob mob) {
         return null;
+    }
+
+    //Snail Bowl
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor serverLevelAccessor, DifficultyInstance difficultyInstance, MobSpawnType mobSpawnType, @Nullable SpawnGroupData spawnGroupData, @Nullable CompoundTag compoundTag) {
+        if (mobSpawnType == MobSpawnType.BUCKET) {
+            return spawnGroupData;
+        }
+        return super.finalizeSpawn(serverLevelAccessor, difficultyInstance, mobSpawnType, spawnGroupData, compoundTag);
+    }
+
+    protected void usePlayerItem(Player player, InteractionHand interactionHand, ItemStack itemStack) {
+        if (itemStack.is(Items.TROPICAL_FISH_BUCKET)) {
+            player.setItemInHand(interactionHand, new ItemStack(Items.WATER_BUCKET));
+        } else {
+            super.usePlayerItem(player, interactionHand, itemStack);
+        }
+
+    }
+
+    public boolean fromBucket() {
+        return this.entityData.get(FROM_BUCKET);
+    }
+
+
+    public void setFromBucket(boolean p_148834_) {
+        this.entityData.set(FROM_BUCKET, p_148834_);
+    }
+    @Deprecated
+    public void saveToBucketTag(ItemStack p_149187_) {
+        Bucketable.saveDefaultDataToBucketTag(this, p_149187_);
+    }
+    @Deprecated
+    public void loadFromBucketTag(CompoundTag p_149163_) {
+        Bucketable.loadDefaultDataFromBucketTag(this, p_149163_);
+    }
+    @Deprecated
+    public ItemStack getBucketItemStack() {
+        return new ItemStack(ModItems.SNAIL_BUCKET.get());
+    }
+
+    public SoundEvent getPickupSound() {
+        return SoundEvents.SLIME_SQUISH_SMALL;
+    }
+
+    public boolean requiresCustomPersistence() {
+        return super.requiresCustomPersistence() || this.fromBucket();
     }
 
     /*//Climbing
