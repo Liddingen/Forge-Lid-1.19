@@ -40,6 +40,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
@@ -104,7 +105,7 @@ public class SnailEntity extends Animal implements ItemSteerable, Saddleable, IA
     }
 
     private PlayState attackPredicate(AnimationEvent event) {
-        if(this.swinging && event.getController().getAnimationState().equals(AnimationState.Stopped)) {
+        if (this.swinging && event.getController().getAnimationState().equals(AnimationState.Stopped)) {
             event.getController().markNeedsReload();
             event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.snail.attack", ILoopType.EDefaultLoopTypes.PLAY_ONCE));
             this.swinging = false;
@@ -119,7 +120,7 @@ public class SnailEntity extends Animal implements ItemSteerable, Saddleable, IA
         data.addAnimationController(new AnimationController(this, "attackController", 0, this::attackPredicate));
     }
 
-       public SnailEntity(EntityType<? extends Animal> entityType, Level level) {
+    public SnailEntity(EntityType<? extends Animal> entityType, Level level) {
         super(entityType, level);
     }
 
@@ -147,18 +148,20 @@ public class SnailEntity extends Animal implements ItemSteerable, Saddleable, IA
         this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, this::isAngryAt));
         this.targetSelector.addGoal(4, new ResetUniversalAngerTargetGoal<>(this, true));
     }
+
     public double getMeleeAttackRangeSqr(LivingEntity livingEntity) {
-        return 0.01D + (double)livingEntity.getBbWidth() * 0.01D;
+        return 0.01D + (double) livingEntity.getBbWidth() * 0.01D;
     }
+
     //Anger
     private void playAngerSound() {
         this.playSound(SoundEvents.SLIME_HURT, this.getSoundVolume() * 2.0F, this.getVoicePitch() * 1.8F);
     } //not Working
 
-       public void setTarget(@Nullable LivingEntity p_34478_) {
+    public void setTarget(@Nullable LivingEntity p_34478_) {
 
         if (p_34478_ instanceof Player) {
-            this.setLastHurtByPlayer((Player)p_34478_);
+            this.setLastHurtByPlayer((Player) p_34478_);
         }
 
         super.setTarget(p_34478_);
@@ -173,7 +176,7 @@ public class SnailEntity extends Animal implements ItemSteerable, Saddleable, IA
     }
 
 
-   @Nullable
+    @Nullable
     public UUID getPersistentAngerTarget() {
         return this.persistentAngerTarget;
     }
@@ -215,8 +218,8 @@ public class SnailEntity extends Animal implements ItemSteerable, Saddleable, IA
         super.defineSynchedData();
         this.entityData.define(DATA_SADDLE_ID, false);
         this.entityData.define(DATA_BOOST_TIME, 0);
-        this.entityData.define(DATA_FLAGS_ID, (byte)0); //Climbing
-       // this.entityData.define(DATA_ID_CHEST, false);//Container
+        this.entityData.define(DATA_FLAGS_ID, (byte) 0); //Climbing
+        // this.entityData.define(DATA_ID_CHEST, false);//Container
     }
 
     public void tick() { //Climbing
@@ -476,16 +479,16 @@ public class SnailEntity extends Animal implements ItemSteerable, Saddleable, IA
         return new WallClimberNavigation(this, p_33802_);
     }
 
-public boolean isClimbing() {
-    return (this.entityData.get(DATA_FLAGS_ID) & 1) != 0;
-}
+    public boolean isClimbing() {
+        return (this.entityData.get(DATA_FLAGS_ID) & 1) != 0;
+    }
 
     public void setClimbing(boolean p_33820_) {
         byte b0 = this.entityData.get(DATA_FLAGS_ID);
         if (p_33820_) {
-            b0 = (byte)(b0 | 1);
+            b0 = (byte) (b0 | 1);
         } else {
-            b0 = (byte)(b0 & -2);
+            b0 = (byte) (b0 & -2);
         }
 
         this.entityData.set(DATA_FLAGS_ID, b0);
@@ -494,7 +497,7 @@ public boolean isClimbing() {
     //Thunder Hit
 
     public void thunderHit(ServerLevel p_35409_, LightningBolt p_35410_) {
-        addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED,1440,60));
+        addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 1440, 60));
         super.thunderHit(p_35409_, p_35410_);
     }
     //Thunder HIt
@@ -517,10 +520,10 @@ public boolean isClimbing() {
 
             BlockState blockstate = ModBlocks.SLIME_TRAIL.get().defaultBlockState();
 
-            for(int l = 0; l < 4; ++l) {
-                i = Mth.floor(this.getX() + (double)((float)(l % 2 * 2 - 1) * 0.25F));
+            for (int l = 0; l < 4; ++l) {
+                i = Mth.floor(this.getX() + (double) ((float) (l % 2 * 2 - 1) * 0.25F));
                 j = Mth.floor(this.getY());
-                k = Mth.floor(this.getZ() + (double)((float)(l / 2 % 2 * 2 - 1) * 0.25F));
+                k = Mth.floor(this.getZ() + (double) ((float) (l / 2 % 2 * 2 - 1) * 0.25F));
                 BlockPos blockpos1 = new BlockPos(i, j, k);
                 if (this.level.isEmptyBlock(blockpos1) && blockstate.canSurvive(this.level, blockpos1)) {
                     this.level.setBlockAndUpdate(blockpos1, blockstate);
@@ -528,8 +531,17 @@ public boolean isClimbing() {
                 }
             }
         }
-
     }
+    //Ende
+
+}
+
+
+
+
+
+
+
     /*container
     public boolean hasChest() {
         return this.entityData.get(DATA_ID_CHEST);
@@ -578,7 +590,6 @@ public boolean isClimbing() {
     public int getInventoryColumns() {
         return 5;
     }  */
-}
     //Taming
 /*
     @Override

@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "#": {
+      "item": "lidmod:snail_shell"
+    },
+    "B": {
+      "item": "minecraft:string"
+    }
+  },
+  "pattern": [
+    "B##",
+    " ##",
+    "B##"
+  ],
+  "result": {
+    "item": "lidmod:snail_house"
+  }
+}
