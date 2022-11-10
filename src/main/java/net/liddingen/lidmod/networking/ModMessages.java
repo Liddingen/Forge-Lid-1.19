@@ -2,6 +2,7 @@ package net.liddingen.lidmod.networking;
 
 import net.liddingen.lidmod.LidMod;
 import net.liddingen.lidmod.networking.packet.ItemStackSyncS2CPacket;
+import net.liddingen.lidmod.networking.packet.ShellHidingC2SPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkDirection;
@@ -31,6 +32,12 @@ public class ModMessages {
                 .decoder(ItemStackSyncS2CPacket::new)
                 .encoder(ItemStackSyncS2CPacket::toBytes)
                 .consumerMainThread(ItemStackSyncS2CPacket::handle)
+                .add();
+
+        net.messageBuilder(ShellHidingC2SPacket.class, id(), NetworkDirection.PLAY_TO_SERVER)
+                .decoder(ShellHidingC2SPacket::new)
+                .encoder(ShellHidingC2SPacket::toBytes)
+                .consumerMainThread(ShellHidingC2SPacket::handle)
                 .add();
     }
 

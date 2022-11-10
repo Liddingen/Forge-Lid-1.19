@@ -43,9 +43,6 @@ public static final RegistryObject<Block> ELEKTRUM_BLOCK = registerBlock("elektr
                     .strength(5f).requiresCorrectToolForDrops()), ModCreativeModeTab.LID_TAB);
 
 //Custom blocks
-public static final RegistryObject<Block> CHARGER = registerBlock("charger",
-        () -> new Charger(BlockBehaviour.Properties.of(Material.METAL)
-                .strength(5f).requiresCorrectToolForDrops()), ModCreativeModeTab.LID_TAB);
 
     public static final RegistryObject<Block> TOGGLEABLE_REDSTONE_LAMP = registerBlock("toggleable_redstone_lamp",
             () -> new ToggleableRedstoneLampBlock(BlockBehaviour.Properties.of(Material.GLASS)

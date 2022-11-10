@@ -20,7 +20,6 @@
   "block.lidmod.elektrum_block": "Block of Elektrum",
   "block.lidmod.elektrum_ore": "Elektrum Ore",
   "block.lidmod.deepslate_elektrum_ore": "Deepslate Elektrum Ore",
-  "block.lidmod.charger": "Charger",
   "block.lidmod.toggleable_redstone_lamp": "Toggleable Redstone Lamp",
   "block.lidmod.chase_block": "Chase Table",
   "block.lidmod.netherite_frame": "Netherite Frame",
@@ -33,6 +32,9 @@
   "entity.minecraft.villager.lidmod.rageful_revenger": "Rageful Revenger",
   "entity.lidmod.snaily": "Snaily",
   "entity.lidmod.snail": "Snail",
+
+  "key.category.tutorialmod.tutorial": "LID Mod",
+  "key.lidmod.shell_hiding": "Shell Hiding",
 
   "itemGroup.lidtab": "LID Mod"
 }

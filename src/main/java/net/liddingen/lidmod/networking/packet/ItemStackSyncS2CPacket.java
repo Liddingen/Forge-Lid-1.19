@@ -1,9 +1,13 @@
 package net.liddingen.lidmod.networking.packet;
 
 import net.liddingen.lidmod.block.entity.NetheriteFrameEntity;
+import net.liddingen.lidmod.entity.ModEntityTypes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.network.NetworkEvent;

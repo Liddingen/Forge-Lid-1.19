@@ -65,10 +65,10 @@ public class LidMod {
             SpawnPlacements.register(ModEntityTypes.SNAILY.get(),
                     SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                     Animal::checkMobSpawnRules);
-
-            ModMessages.register();
             ModVillagers.registerPOIs();
         });
+
+        ModMessages.register();
     }
 
     // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
