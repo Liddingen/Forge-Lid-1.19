@@ -4,6 +4,7 @@ import com.mojang.logging.LogUtils;
 import net.liddingen.lidmod.block.ModBlocks;
 import net.liddingen.lidmod.block.entity.ModBlockEntities;
 import net.liddingen.lidmod.entity.ModEntityTypes;
+import net.liddingen.lidmod.entity.client.ShellRenderer;
 import net.liddingen.lidmod.entity.client.SnailRenderer;
 import net.liddingen.lidmod.entity.client.SnailyRenderer;
 import net.liddingen.lidmod.item.ModItems;
@@ -81,6 +82,7 @@ public class LidMod {
 
             EntityRenderers.register(ModEntityTypes.SNAIL.get(), SnailRenderer::new);
             EntityRenderers.register(ModEntityTypes.SNAILY.get(), SnailyRenderer::new);
+            EntityRenderers.register(ModEntityTypes.SHELL.get(), ShellRenderer::new);
         }
     }
 }

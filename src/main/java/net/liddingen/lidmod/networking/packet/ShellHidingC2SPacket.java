@@ -28,7 +28,7 @@ public class ShellHidingC2SPacket {
             // Shell Hiding Key Event
             ServerPlayer player = context.getSender();
             ServerLevel level = player.getLevel();
-            ModEntityTypes.SNAILY.get().spawn(level, null, null, player.blockPosition(),
+            ModEntityTypes.SHELL.get().spawn(level, null, null, player.blockPosition(),
                     MobSpawnType.COMMAND, true, false);
         });
         return true;

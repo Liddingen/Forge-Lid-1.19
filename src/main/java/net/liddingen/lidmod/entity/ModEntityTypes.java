@@ -2,6 +2,7 @@ package net.liddingen.lidmod.entity;
 
 
 import net.liddingen.lidmod.LidMod;
+import net.liddingen.lidmod.entity.custom.ShellEntity;
 import net.liddingen.lidmod.entity.custom.SnailEntity;
 import net.liddingen.lidmod.entity.custom.SnailyEntity;
 import net.minecraft.resources.ResourceLocation;
@@ -28,6 +29,12 @@ public class ModEntityTypes {
                     () -> EntityType.Builder.of(SnailyEntity::new, MobCategory.CREATURE)
                             .sized(0.6f, 0.6f)  //HIT-box
                             .build(new ResourceLocation(LidMod.MOD_ID, "snaily").toString()));
+
+    public static final RegistryObject<EntityType<ShellEntity>> SHELL =
+            ENTITY_TYPES.register("shell",
+                    () -> EntityType.Builder.of(ShellEntity::new, MobCategory.CREATURE)
+                            .sized(0.6f, 0.6f)  //HIT-box
+                            .build(new ResourceLocation(LidMod.MOD_ID, "shell").toString()));
 
 
     public static void register(IEventBus eventBus) {

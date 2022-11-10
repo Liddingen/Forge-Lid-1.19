@@ -4,6 +4,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.liddingen.lidmod.LidMod;
 import net.liddingen.lidmod.block.ModBlocks;
 import net.liddingen.lidmod.entity.ModEntityTypes;
+import net.liddingen.lidmod.entity.custom.ShellEntity;
 import net.liddingen.lidmod.entity.custom.SnailEntity;
 import net.liddingen.lidmod.entity.custom.SnailyEntity;
 import net.liddingen.lidmod.item.ModItems;
@@ -147,6 +148,7 @@ public class ModEvents {
         public static void entityAttributeEvent(EntityAttributeCreationEvent event) {
             event.put(ModEntityTypes.SNAIL.get(), SnailEntity.setAttributes());
             event.put(ModEntityTypes.SNAILY.get(), SnailyEntity.setAttributes());
+            event.put(ModEntityTypes.SHELL.get(), ShellEntity.setAttributes());
         }
     }
 }
