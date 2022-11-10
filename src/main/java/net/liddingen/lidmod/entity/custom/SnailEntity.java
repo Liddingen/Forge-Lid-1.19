@@ -5,6 +5,7 @@ import com.mojang.logging.LogUtils;
 import net.liddingen.lidmod.block.ModBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.data.worldgen.features.EndFeatures;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -15,6 +16,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.util.TimeUtil;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.InteractionHand;
@@ -33,6 +35,7 @@ import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.ai.navigation.WallClimberNavigation;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.animal.frog.Frog;
+import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.DismountHelper;
 import net.minecraft.world.item.ItemStack;
@@ -44,6 +47,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.levelgen.feature.EndPodiumFeature;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
@@ -534,6 +539,51 @@ public class SnailEntity extends Animal implements ItemSteerable, Saddleable, IA
     }
     //Ende
 
+    //SchneckenHaus
+/*
+    public void kill() {
+        this.remove(Entity.RemovalReason.KILLED);
+        this.gameEvent(GameEvent.ENTITY_DIE);
+        if (this.dragonFight != null) {
+            this.dragonFight.updateDragon(this);
+            this.dragonFight.setDragonKilled(this);
+        }
+
+    }
+
+
+
+    public void setDragonKilled(EnderDragon p_64086_) {
+        if (p_64086_.getUUID().equals(this.dragonUUID)) {
+            this.dragonEvent.setProgress(0.0F);
+            this.dragonEvent.setVisible(false);
+            this.spawnExitPortal(true);
+            this.spawnNewGateway();
+            if (!this.previouslyKilled) {
+                this.level.setBlockAndUpdate(this.level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING, EndPodiumFeature.END_PODIUM_LOCATION), Blocks.DRAGON_EGG.defaultBlockState());
+            }
+
+            this.previouslyKilled = true;
+            this.dragonKilled = true;
+        }
+
+    }
+
+    private void spawnNewGateway() {
+        if (!this.gateways.isEmpty()) {
+            int i = this.gateways.remove(this.gateways.size() - 1);
+            int j = Mth.floor(96.0D * Math.cos(2.0D * (-Math.PI + 0.15707963267948966D * (double)i)));
+            int k = Mth.floor(96.0D * Math.sin(2.0D * (-Math.PI + 0.15707963267948966D * (double)i)));
+            this.spawnNewGateway(new BlockPos(j, 75, k));
+        }
+    }
+
+    private void spawnNewGateway(BlockPos p_64090_) {
+        this.level.levelEvent(3000, p_64090_, 0);
+        EndFeatures.END_GATEWAY_DELAYED.value().place(this.level, this.level.getChunkSource().getGenerator(), RandomSource.create(), p_64090_);
+    }
+
+*/
 }
 
 

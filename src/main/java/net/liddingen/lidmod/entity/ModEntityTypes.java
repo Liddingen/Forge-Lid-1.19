@@ -26,7 +26,7 @@ public class ModEntityTypes {
     public static final RegistryObject<EntityType<SnailyEntity>> SNAILY =
             ENTITY_TYPES.register("snaily",
                     () -> EntityType.Builder.of(SnailyEntity::new, MobCategory.CREATURE)
-                            .sized(0.5f, 0.5f)  //HIT-box
+                            .sized(0.6f, 0.6f)  //HIT-box
                             .build(new ResourceLocation(LidMod.MOD_ID, "snaily").toString()));
 
 

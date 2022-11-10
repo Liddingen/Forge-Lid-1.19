@@ -13,7 +13,7 @@ import java.util.function.Supplier;
 
 public enum ModArmorMaterials implements ArmorMaterial {
     SHELL("shell", 28, new int[]{0, 0, 8, 0}, 19, SoundEvents.ARMOR_EQUIP_TURTLE,
-            2.0F, 1.0F, () -> Ingredient.of(ModItems.JUG.get())); //Shell Item
+            2.0F, 1.0F, () -> Ingredient.of(ModItems.SNAIL_SHELL.get())); //Shell Item
 
     private static final int[] HEALTH_PER_SLOT = new int[]{0, 0, 16, 0};
     private final String name;

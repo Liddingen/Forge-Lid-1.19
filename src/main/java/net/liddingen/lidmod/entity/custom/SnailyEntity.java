@@ -77,6 +77,9 @@ public class SnailyEntity extends Animal implements IAnimatable, IAnimationTicka
     private static final EntityDataAccessor<Byte> DATA_FLAGS_ID = SynchedEntityData.defineId(SnailEntity.class, EntityDataSerializers.BYTE);
     //Climbing
 
+    private static final Ingredient FOOD_ITEMS = Ingredient.of(Items.OAK_LEAVES, Items.BIRCH_LEAVES, Items.SPRUCE_LEAVES, Items.DARK_OAK_LEAVES, Items.OAK_LEAVES,
+            Items.ACACIA_LEAVES, Items.JUNGLE_LEAVES, Items.MANGROVE_LEAVES);
+
     public SnailyEntity(EntityType<? extends Animal> entityType, Level level) {
         super(entityType, level);
     }
@@ -138,6 +141,27 @@ public class SnailyEntity extends Animal implements IAnimatable, IAnimationTicka
     public int tickTimer() {
         return tickCount;
     }
+
+    public boolean isFood(ItemStack p_29508_) {
+        return FOOD_ITEMS.test(p_29508_);
+    }
+
+    @Nullable
+    @Override
+    public AgeableMob getBreedOffspring(ServerLevel serverLevel, AgeableMob mob) {
+        return ModEntityTypes.SNAILY.get().create(serverLevel);
+    }
+    /*
+    @Nullable
+    @Override
+    public AgeableMob getBreedOffspring(ServerLevel level, AgeableMob mob) {
+        return null;
+    }
+
+    public boolean isFood(ItemStack itemStack) {
+        return Ingredient.of(Items.ENCHANTED_GOLDEN_APPLE).test(itemStack);
+    }*/
+
 
     public void setTarget(@Nullable LivingEntity livingEntity) {
 
@@ -212,7 +236,10 @@ public class SnailyEntity extends Animal implements IAnimatable, IAnimationTicka
 
     public InteractionResult mobInteract(Player player, InteractionHand interactionHand) {
         ItemStack itemstack = player.getItemInHand(interactionHand);
-         if (itemstack.is(Items.ENCHANTED_GOLDEN_APPLE)) {
+        if(isFood(itemstack)) { //
+            return super.mobInteract(player, interactionHand); //
+        }
+         if (itemstack.is(Items.ENCHANTED_GOLDEN_APPLE) && !isBaby()) {
                 if (!player.getAbilities().instabuild) {
                     itemstack.shrink(1);
                 }
@@ -298,17 +325,7 @@ public class SnailyEntity extends Animal implements IAnimatable, IAnimationTicka
         return this.isBaby() ? dimensions.height * 0.95F : 0.25F;
     }
 
-    public boolean isFood(ItemStack itemStack) {
-        return Ingredient.of(Items.ENCHANTED_GOLDEN_APPLE).test(itemStack);
-    }
-
-    @Nullable
-    @Override
-    public AgeableMob getBreedOffspring(ServerLevel level, AgeableMob mob) {
-        return null;
-    }
-
-    //Snail Bowl
+        //Snail Bowl
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor serverLevelAccessor, DifficultyInstance difficultyInstance, MobSpawnType mobSpawnType, @Nullable SpawnGroupData spawnGroupData, @Nullable CompoundTag compoundTag) {
         if (mobSpawnType == MobSpawnType.BUCKET) {
             return spawnGroupData;

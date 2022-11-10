@@ -27,11 +27,15 @@ public class SnailyRenderer extends GeoEntityRenderer<SnailyEntity> {
 
 
     @Override
-    public RenderType getRenderType(SnailyEntity entity, float partialTicks, PoseStack stack,
+    public RenderType getRenderType(SnailyEntity animatable, float partialTicks, PoseStack stack,
                                     @Nullable MultiBufferSource renderTypeBuffer,
                                     @Nullable VertexConsumer vertexBuilder, int packedLightIn,
                                     ResourceLocation textureLocation) {
-        stack.scale(1.0f, 1.0f, 1.0f);  //Size x/y/z
+        if(animatable.isBaby()) {
+            stack.scale(0.8F, 0.8F, 0.8F);  //Size of baby x/y/z
+        } else {
+            stack.scale(1.6f, 1.6f, 1.6f);  //Size x/y/z
+        }
         return super.getRenderType(animatable, partialTicks, stack, renderTypeBuffer, vertexBuilder, packedLightIn, textureLocation);
     }
 }
