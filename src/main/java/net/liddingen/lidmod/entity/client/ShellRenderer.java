@@ -18,7 +18,7 @@ import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
 public class ShellRenderer extends GeoEntityRenderer<ShellEntity> {
     public ShellRenderer(EntityRendererProvider.Context renderManager) {
         super(renderManager, new ShellModel());
-        this.shadowRadius = 2f;   //Shadow
+        this.shadowRadius = 0.4f;   //Shadow
        }
     @Override
     public ResourceLocation getTextureLocation(ShellEntity instance) {
@@ -31,7 +31,7 @@ public class ShellRenderer extends GeoEntityRenderer<ShellEntity> {
                                     @Nullable MultiBufferSource renderTypeBuffer,
                                     @Nullable VertexConsumer vertexBuilder, int packedLightIn,
                                     ResourceLocation textureLocation) {
-        stack.scale(1f, 1f, 1f);  //Size x/y/z
+        stack.scale(1.2f, 1.2f, 1.2f);  //Size x/y/z
         return super.getRenderType(animatable, partialTicks, stack, renderTypeBuffer, vertexBuilder, packedLightIn, textureLocation);
     }
 }

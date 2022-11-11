@@ -3,6 +3,7 @@ package net.liddingen.lidmod;
 import com.mojang.logging.LogUtils;
 import net.liddingen.lidmod.block.ModBlocks;
 import net.liddingen.lidmod.block.entity.ModBlockEntities;
+import net.liddingen.lidmod.effect.ModEffects;
 import net.liddingen.lidmod.entity.ModEntityTypes;
 import net.liddingen.lidmod.entity.client.ShellRenderer;
 import net.liddingen.lidmod.entity.client.SnailRenderer;
@@ -53,6 +54,7 @@ public class LidMod {
 
         ModBlockEntities.register(modEventBus);
         ModMenuTypes.register(modEventBus);
+        ModEffects.register(modEventBus);
 
         modEventBus.addListener(this::commonSetup);
 

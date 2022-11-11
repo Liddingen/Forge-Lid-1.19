@@ -39,6 +39,10 @@ public class ShellEntity extends Animal implements IAnimatable, IAnimationTickab
                 .add(Attributes.MOVEMENT_SPEED, 0f).build();
     }
 
+    @Override
+    public boolean attackable() {
+        return super.attackable();
+    }
 
     private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
 
