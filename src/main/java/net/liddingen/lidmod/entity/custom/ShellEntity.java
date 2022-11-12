@@ -115,6 +115,8 @@ public class ShellEntity extends Animal implements IAnimatable, IAnimationTickab
         return this.isBaby() ? dimensions.height * 0.95F : 0.25F;
     }
 
+    
+
     //Cracks
 
 /*

@@ -13,7 +13,7 @@ public class HidingEffect extends MobEffect {
     @Override
     public void applyEffectTick(LivingEntity pLivingEntity, int pAmplifier) {
         if (!pLivingEntity.level.isClientSide()) {
-            pLivingEntity.setInvisible(true);
+            pLivingEntity.setInvisible(false);
             /*Double x = pLivingEntity.getX();
             Double y = pLivingEntity.getY();
             Double z = pLivingEntity.getZ();

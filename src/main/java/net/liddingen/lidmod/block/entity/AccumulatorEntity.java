@@ -1,7 +1,10 @@
 package net.liddingen.lidmod.block.entity;
 
 import net.liddingen.lidmod.item.ModItems;
+import net.liddingen.lidmod.networking.ModMessages;
+import net.liddingen.lidmod.networking.packet.EnergySyncS2CPacket;
 import net.liddingen.lidmod.screen.AccumulatorMenu;
+import net.liddingen.lidmod.util.ModEnergyStorage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -18,8 +21,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
@@ -77,9 +81,15 @@ public class AccumulatorEntity extends BlockEntity implements MenuProvider {
         return new AccumulatorMenu(id, inventory, this, this.data);
     }
 
+    private LazyOptional<IEnergyStorage> lazyEnergyHandler = LazyOptional.empty();//Energy
+
     @Override
     public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+        if(cap == ForgeCapabilities.ENERGY) {
+            return lazyEnergyHandler.cast();
+        } //Energy
+
+        if (cap == ForgeCapabilities.ITEM_HANDLER) {
             return lazyItemHandler.cast();
         }
 
@@ -90,18 +100,21 @@ public class AccumulatorEntity extends BlockEntity implements MenuProvider {
     public void onLoad() {
         super.onLoad();
         lazyItemHandler = LazyOptional.of(() -> itemHandler);
+        lazyEnergyHandler = LazyOptional.of(() -> ENERGY_STORAGE); //Energy
     }
 
     @Override
     public void invalidateCaps() {
         super.invalidateCaps();
         lazyItemHandler.invalidate();
+        lazyEnergyHandler.invalidate(); //Energy
     }
 
     @Override
     protected void saveAdditional(CompoundTag nbt) {
         nbt.put("inventory", itemHandler.serializeNBT());
         nbt.putInt("accumulator.progress", this.progress);
+        nbt.putInt("accumulator.energy", ENERGY_STORAGE.getEnergyStored()); //Energy
 
         super.saveAdditional(nbt);
     }
@@ -111,6 +124,7 @@ public class AccumulatorEntity extends BlockEntity implements MenuProvider {
         super.load(nbt);
         itemHandler.deserializeNBT(nbt.getCompound("inventory"));
         progress = nbt.getInt("accumulator_progress");
+        ENERGY_STORAGE.setEnergy(nbt.getInt("accumulator.energy")); //Energy
     }
 
     public void drops() {
@@ -127,8 +141,13 @@ public class AccumulatorEntity extends BlockEntity implements MenuProvider {
             return;
         }
 
-        if (hasRecipe(pEntity)) {
+        if (hasAccumulatorSlot(pEntity)) {
+            pEntity.ENERGY_STORAGE.receiveEnergy(64,false);
+        }
+
+        if (hasRecipe(pEntity) && hasEnoughEnergy(pEntity)) {
             pEntity.progress++;
+            extractEnergy(pEntity);
             setChanged(level, pos, state);
 
             if (pEntity.progress >= pEntity.maxProgress) {
@@ -140,6 +159,18 @@ public class AccumulatorEntity extends BlockEntity implements MenuProvider {
         }
     }
 
+    private static void extractEnergy(AccumulatorEntity pEntity) {
+        pEntity.ENERGY_STORAGE.extractEnergy(ENERGY_REQ, false);
+    }
+
+    private static boolean hasEnoughEnergy(AccumulatorEntity pEntity) {
+        return pEntity.ENERGY_STORAGE.getEnergyStored() >= ENERGY_REQ * pEntity.maxProgress;
+    }
+
+    private static boolean hasAccumulatorSlot(AccumulatorEntity pEntity) {
+       return pEntity.itemHandler.getStackInSlot(1).getItem() == ModItems.THUNDER_JUG.get();
+    }
+
     private void resetProgress() {
         this.progress = 0;
     }
@@ -147,9 +178,19 @@ public class AccumulatorEntity extends BlockEntity implements MenuProvider {
     private static void craftItem(AccumulatorEntity pEntity) {
 
         if(hasRecipe(pEntity)) {
+
+            boolean hasJugInFirstSlot = pEntity.itemHandler.getStackInSlot(1).getItem() == ModItems.JUG.get();
+            boolean hasThunderJugInFirstSlot = pEntity.itemHandler.getStackInSlot(1).getItem() == ModItems.THUNDER_JUG.get();
             pEntity.itemHandler.extractItem(1, 1, false);
-            pEntity.itemHandler.setStackInSlot(2, new ItemStack(ModItems.THUNDER_JUG.get(),  //hier steht auch was zu ergebnis!
+
+            if (hasJugInFirstSlot) {
+                pEntity.itemHandler.setStackInSlot(2, new ItemStack(ModItems.THUNDER_JUG.get(),  //hier steht auch was zu ergebnis!
                     pEntity.itemHandler.getStackInSlot(2).getCount() + 1));
+
+            } else if (hasThunderJugInFirstSlot) {
+                pEntity.itemHandler.setStackInSlot(2, new ItemStack(ModItems.JUG.get(),
+                        pEntity.itemHandler.getStackInSlot(2).getCount() + 1));
+            }
 
             pEntity.resetProgress();
         }
@@ -163,9 +204,13 @@ public class AccumulatorEntity extends BlockEntity implements MenuProvider {
         }
 
         boolean hasJugInFirstSlot = entity.itemHandler.getStackInSlot(1).getItem() == ModItems.JUG.get();
+        boolean hasThunderJugInFirstSlot = entity.itemHandler.getStackInSlot(1).getItem() == ModItems.THUNDER_JUG.get();
 
-        return hasJugInFirstSlot && canInsertAmountIntoOutputSlot(inventory) &&
-                canInsertItemIntoOutputSlot(inventory, new ItemStack(ModItems.THUNDER_JUG.get(), 1));  //gefüllter thunder Jug erstellen
+        return (hasJugInFirstSlot && canInsertAmountIntoOutputSlot(inventory) &&
+                canInsertItemIntoOutputSlot(inventory, new ItemStack(ModItems.THUNDER_JUG.get(), 1))) ||  //gefüllter thunder Jug erstellen
+
+                (hasThunderJugInFirstSlot && canInsertAmountIntoOutputSlot(inventory) &&
+                canInsertItemIntoOutputSlot(inventory, new ItemStack(ModItems.JUG.get(), 1)));
 
     }
 
@@ -175,5 +220,24 @@ public class AccumulatorEntity extends BlockEntity implements MenuProvider {
 
     private static boolean canInsertAmountIntoOutputSlot(SimpleContainer inventory) {
         return inventory.getItem(2).getMaxStackSize() > inventory.getItem(2).getCount();
+    }
+
+    //Energy
+
+    private final ModEnergyStorage ENERGY_STORAGE = new ModEnergyStorage(51200, 320) {
+        @Override
+        public void onEnergyChanged() {
+            setChanged();
+            ModMessages.sendToClients(new EnergySyncS2CPacket(this.energy, getBlockPos()));
+        }
+    };
+    private static final int ENERGY_REQ = 32;
+
+    public IEnergyStorage getEnergyStorage() {
+        return ENERGY_STORAGE;
+    }
+
+    public void setEnergyLevel(int energy) {
+        this.ENERGY_STORAGE.setEnergy(energy);
     }
 }
