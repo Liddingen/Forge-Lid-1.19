@@ -111,10 +111,11 @@ public class SnailyEntity extends Animal implements IAnimatable, IAnimationTicka
         if (event.isMoving()) {
             event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.snaily.walk", ILoopType.EDefaultLoopTypes.LOOP));
             return PlayState.CONTINUE;
-        }
+        } else {
 
-        event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.snaily.idle", ILoopType.EDefaultLoopTypes.LOOP));
-        return PlayState.CONTINUE;
+            event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.snaily.idle", ILoopType.EDefaultLoopTypes.LOOP));
+            return PlayState.CONTINUE;
+        }
     }
 
     private PlayState attackPredicate(AnimationEvent event) {
