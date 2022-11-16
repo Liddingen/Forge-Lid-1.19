@@ -7,8 +7,8 @@
 				"texture_width": 256,
 				"texture_height": 256,
 				"visible_bounds_width": 5,
-				"visible_bounds_height": 3.5,
-				"visible_bounds_offset": [0, 1.25, 0]
+				"visible_bounds_height": 4.5,
+				"visible_bounds_offset": [0, 1.75, 0]
 			},
 			"bones": [
 				{
@@ -60,6 +60,14 @@
 					"cubes": [
 						{"origin": [-5, 10, -27], "size": [1, 6, 1], "uv": [0, 13]},
 						{"origin": [4, 10, -27], "size": [1, 6, 1], "uv": [0, 0]}
+					]
+				},
+				{
+					"name": "Saddle2",
+					"parent": "Kopf",
+					"pivot": [0, 6, -22.5],
+					"cubes": [
+						{"origin": [-5.5, 1.5, -27.5], "size": [11, 9, 9.5], "uv": [142, 42]}
 					]
 				},
 				{
@@ -125,9 +133,9 @@
 					"parent": "Haus",
 					"pivot": [0, 0, -8],
 					"cubes": [
-						{"origin": [-12.3, 34.2, -14], "size": [24.5, 0, 19], "uv": [83, 2]},
-						{"origin": [9.8, 12.4, -14], "size": [24.5, 0, 19], "pivot": [0, 0, -8], "rotation": [0, 0, -90], "uv": [83, 2]},
-						{"origin": [9.8, 12.4, -21], "size": [24.5, 0, 19], "pivot": [0, 0, -8], "rotation": [180, 0, -90], "uv": [83, 2]}
+						{"origin": [-5.5, 10.5, -20], "size": [11, 25.5, 4], "uv": [142, 10]},
+						{"origin": [-6, 34, -16], "size": [12, 1, 10], "uv": [178, 50]},
+						{"origin": [-6, 35, -16], "size": [12, 10, 10], "uv": [143, 79]}
 					]
 				}
 			]
