@@ -20,7 +20,6 @@ public class ModMenuTypes {
     public static final RegistryObject<MenuType<NetheriteFrameMenu>> NETHERITE_FRAME_MENU =
             registerMenuType(NetheriteFrameMenu::new, "netherite_frane_menu");
 
-
     private static <T extends AbstractContainerMenu> RegistryObject<MenuType<T>> registerMenuType(IContainerFactory<T> factory,
                                                                                                   String name) {
         return MENUS.register(name, () -> IForgeMenuType.create(factory));

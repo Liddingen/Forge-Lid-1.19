@@ -84,6 +84,13 @@ public class SnailEntity extends Animal implements ItemSteerable, Saddleable, IA
     //Climbing
 
     //Saddle
+
+    private boolean inputLeft;
+    private boolean inputRight;
+    private boolean inputUp;
+    private boolean inputDown;
+    private float deltaRotation;
+
     private static final EntityDataAccessor<Boolean> DATA_SADDLE_ID = SynchedEntityData.defineId(SnailEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Integer> DATA_BOOST_TIME = SynchedEntityData.defineId(SnailEntity.class, EntityDataSerializers.INT);
     private static final Ingredient FOOD_ITEMS = Ingredient.of(Items.OAK_LEAVES, Items.BIRCH_LEAVES, Items.SPRUCE_LEAVES, Items.DARK_OAK_LEAVES, Items.OAK_LEAVES,
@@ -143,7 +150,7 @@ public class SnailEntity extends Animal implements ItemSteerable, Saddleable, IA
     protected void registerGoals() {
         this.goalSelector.addGoal(1, new FloatGoal(this));
         this.goalSelector.addGoal(2, new BreedGoal(this, 1.0D));
-        this.goalSelector.addGoal(3, new TemptGoal(this, 1.2D, Ingredient.of(Items.CARROT_ON_A_STICK), false)); //Noch ändern
+        //this.goalSelector.addGoal(3, new TemptGoal(this, 1.2D, Ingredient.of(Items.CARROT_ON_A_STICK), false)); //Noch ändern
         this.goalSelector.addGoal(3, new TemptGoal(this, 1.2D, FOOD_ITEMS, false));
         this.goalSelector.addGoal(4, new MeleeAttackGoal(this, 1.2D, false));
         this.goalSelector.addGoal(4, new WaterAvoidingRandomStrollGoal(this, 1.0D));
@@ -199,18 +206,40 @@ public class SnailEntity extends Animal implements ItemSteerable, Saddleable, IA
 
 
     //saddle
-    public LivingEntity getControllingPassenger() {
+   /* public LivingEntity getControllingPassenger() {
         LivingEntity LivingEntity = (net.minecraft.world.entity.LivingEntity) this.getFirstPassenger();
         return LivingEntity != null && this.canBeControlledBy(LivingEntity) ? LivingEntity : null;
+    }*/
+
+    @Nullable
+    public LivingEntity getControllingPassenger() {
+        if (this.isSaddled()) {
+            Entity entity = this.getFirstPassenger();
+            if (entity instanceof LivingEntity) {
+                return (LivingEntity)entity;
+            }
+        }
+        return null;
+    }
+    protected boolean canAddPassenger(Entity pPassenger) {
+        return this.getPassengers().size() < this.getMaxPassengers();
     }
 
-    private boolean canBeControlledBy(LivingEntity p_218248_) {
+    protected int getMaxPassengers() {
+        return 4;
+    }
+
+    @Override
+    protected void addPassenger(Entity passenger) {
+        super.addPassenger(passenger);
+        }
+    /*private boolean canBeControlledBy(LivingEntity p_218248_) {
         if (this.isSaddled() && p_218248_ instanceof Player player) {
             return player.getMainHandItem().is(Items.CARROT_ON_A_STICK) || player.getOffhandItem().is(Items.CARROT_ON_A_STICK);
         } else {
             return false;
         }
-    }
+    }*/
 
 
     public void onSyncedDataUpdated(EntityDataAccessor<?> p_29480_) {
@@ -340,14 +369,13 @@ public class SnailEntity extends Animal implements ItemSteerable, Saddleable, IA
         if (this.hasPassenger(p_30830_)) {
             float f = Mth.cos(this.yBodyRot * ((float) Math.PI / 180F));
             float f1 = Mth.sin(this.yBodyRot * ((float) Math.PI / 180F));
-            float f2 = 0.3F;
-            p_30830_.setPos(this.getX() + (double) (-3.0F * f1),
-                    this.getY() + this.getPassengersRidingOffset() + p_30830_.getMyRidingOffset(), this.getZ() - (double) (-3.0F * f));
+            p_30830_.setPos(this.getX() + (double) (-2.5F * f1),
+                    this.getY() + this.getPassengersRidingOffset() + p_30830_.getMyRidingOffset(), this.getZ() - (double) (-2.5F * f));
         }
     }
 
     public double getPassengersRidingOffset() {
-        return (double) this.getBbHeight() * 0.965F;
+        return (double) this.getBbHeight() * 1F;
     }
 
 
