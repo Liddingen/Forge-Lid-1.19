@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.liddingen.lidmod.LidMod;
 import net.liddingen.lidmod.entity.custom.SnailEntity;
+import net.liddingen.lidmod.entity.layers.SnailChestLayer;
 import net.liddingen.lidmod.entity.layers.SnailSaddleLayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -22,6 +23,7 @@ public class SnailRenderer extends GeoEntityRenderer<SnailEntity> {
         this.shadowRadius = 5f;   //Shadow
 
         addLayer(new SnailSaddleLayer(this));
+        addLayer(new SnailChestLayer(this));
 
        }
     @Override

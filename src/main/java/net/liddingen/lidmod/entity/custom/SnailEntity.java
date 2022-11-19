@@ -7,6 +7,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.data.worldgen.features.EndFeatures;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -35,6 +36,7 @@ import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.ai.navigation.WallClimberNavigation;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.animal.frog.Frog;
+import net.minecraft.world.entity.animal.horse.AbstractChestedHorse;
 import net.minecraft.world.entity.animal.horse.AbstractHorse;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.entity.player.Player;
@@ -52,6 +54,7 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.feature.EndPodiumFeature;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.event.ForgeEventFactory;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import software.bernie.geckolib3.core.AnimationState;
@@ -69,27 +72,17 @@ import software.bernie.geckolib3.util.GeckoLibUtil;
 import java.util.Set;
 import java.util.UUID;
 
-public class SnailEntity extends Animal implements ItemSteerable, Saddleable, IAnimatable, IAnimationTickable, NeutralMob {
-    /*Container
+public class SnailEntity extends AbstractChestedHorse implements ItemSteerable, Saddleable, IAnimatable, IAnimationTickable, NeutralMob {
+    //Container
     private static final EntityDataAccessor<Boolean> DATA_ID_CHEST = SynchedEntityData.defineId(AbstractChestedHorse.class, EntityDataSerializers.BOOLEAN);
     public static final int INV_CHEST_COUNT = 15;
-    Container*/
-
-    //Thunder
-    private static final Logger LOGGER = LogUtils.getLogger();
-    //Thunder
+    //Container
 
     //Climbing
     private static final EntityDataAccessor<Byte> DATA_FLAGS_ID = SynchedEntityData.defineId(SnailEntity.class, EntityDataSerializers.BYTE);
     //Climbing
 
     //Saddle
-
-    private boolean inputLeft;
-    private boolean inputRight;
-    private boolean inputUp;
-    private boolean inputDown;
-    private float deltaRotation;
 
     private static final EntityDataAccessor<Boolean> DATA_SADDLE_ID = SynchedEntityData.defineId(SnailEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Integer> DATA_BOOST_TIME = SynchedEntityData.defineId(SnailEntity.class, EntityDataSerializers.INT);
@@ -134,12 +127,12 @@ public class SnailEntity extends Animal implements ItemSteerable, Saddleable, IA
         data.addAnimationController(new AnimationController(this, "attackController", 0, this::attackPredicate));
     }
 
-    public SnailEntity(EntityType<? extends Animal> entityType, Level level) {
+    public SnailEntity(EntityType<? extends AbstractChestedHorse> entityType, Level level) {
         super(entityType, level);
     }
 
     public static AttributeSupplier setAttributes() {
-        return Animal.createMobAttributes()
+        return AbstractChestedHorse.createMobAttributes()
                 .add(Attributes.MAX_HEALTH, 100.0D)
                 .add(Attributes.ATTACK_DAMAGE, 10f)
                 .add(Attributes.ATTACK_SPEED, 0.5f)
@@ -162,7 +155,7 @@ public class SnailEntity extends Animal implements ItemSteerable, Saddleable, IA
         this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, this::isAngryAt));
         this.targetSelector.addGoal(4, new ResetUniversalAngerTargetGoal<>(this, true));
     }
-
+    @Override
     public double getMeleeAttackRangeSqr(LivingEntity livingEntity) {
         return 0.01D + (double) livingEntity.getBbWidth() * 0.01D;
     }
@@ -171,7 +164,7 @@ public class SnailEntity extends Animal implements ItemSteerable, Saddleable, IA
     private void playAngerSound() {
         this.playSound(SoundEvents.SLIME_HURT, this.getSoundVolume() * 2.0F, this.getVoicePitch() * 1.8F);
     } //not Working
-
+    @Override
     public void setTarget(@Nullable LivingEntity p_34478_) {
 
         if (p_34478_ instanceof Player) {
@@ -180,11 +173,11 @@ public class SnailEntity extends Animal implements ItemSteerable, Saddleable, IA
 
         super.setTarget(p_34478_);
     }
-
+    @Override
     public void startPersistentAngerTimer() {
         this.setRemainingPersistentAngerTime(PERSISTENT_ANGER_TIME.sample(this.random));
     }
-
+    @Override
     public void setRemainingPersistentAngerTime(int p_34448_) {
         this.remainingPersistentAngerTime = p_34448_;
     }
@@ -199,7 +192,7 @@ public class SnailEntity extends Animal implements ItemSteerable, Saddleable, IA
     public void setPersistentAngerTarget(@Nullable UUID p_34444_) {
         this.persistentAngerTarget = p_34444_;
     }
-
+    @Override
     public int getRemainingPersistentAngerTime() {
         return this.remainingPersistentAngerTime;
     }
@@ -221,6 +214,7 @@ public class SnailEntity extends Animal implements ItemSteerable, Saddleable, IA
         }
         return null;
     }
+    @Override
     protected boolean canAddPassenger(Entity pPassenger) {
         return this.getPassengers().size() < this.getMaxPassengers();
     }
@@ -241,7 +235,7 @@ public class SnailEntity extends Animal implements ItemSteerable, Saddleable, IA
         }
     }*/
 
-
+    @Override
     public void onSyncedDataUpdated(EntityDataAccessor<?> p_29480_) {
         if (DATA_BOOST_TIME.equals(p_29480_) && this.level.isClientSide) {
             this.steering.onSynced();
@@ -249,15 +243,15 @@ public class SnailEntity extends Animal implements ItemSteerable, Saddleable, IA
 
         super.onSyncedDataUpdated(p_29480_);
     }
-
+    @Override
     protected void defineSynchedData() {
         super.defineSynchedData();
         this.entityData.define(DATA_SADDLE_ID, false);
         this.entityData.define(DATA_BOOST_TIME, 0);
         this.entityData.define(DATA_FLAGS_ID, (byte) 0); //Climbing
-        // this.entityData.define(DATA_ID_CHEST, false);//Container
+        this.entityData.define(DATA_ID_CHEST, false);//Container
     }
-
+    @Override
     public void tick() { //Climbing
         super.tick();
         if (!this.level.isClientSide) {
@@ -265,17 +259,17 @@ public class SnailEntity extends Animal implements ItemSteerable, Saddleable, IA
         }
 
     }
-
+    @Override
     public boolean onClimbable() {
         return this.isClimbing();
     } //Climbing
 
-
-    public void addAdditionalSaveData(CompoundTag p_29495_) {
-        super.addAdditionalSaveData(p_29495_);
-        this.steering.addAdditionalSaveData(p_29495_);
-        this.addPersistentAngerSaveData(p_29495_); //Anger
-        /*p_29495_.putBoolean("ChestedHorse", this.hasChest()); //Container
+    @Override
+    public void addAdditionalSaveData(CompoundTag tag) {
+        super.addAdditionalSaveData(tag);
+        this.steering.addAdditionalSaveData(tag);
+        this.addPersistentAngerSaveData(tag); //Anger
+        tag.putBoolean("ChestedHorse", this.hasChest()); //Container
         if (this.hasChest()) { //Container
             ListTag listtag = new ListTag();
 
@@ -289,18 +283,18 @@ public class SnailEntity extends Animal implements ItemSteerable, Saddleable, IA
                 }
             }
 
-            p_29495_.put("Items", listtag);
-        }*/
+            tag.put("Items", listtag);
+        }
     }
-
-    public void readAdditionalSaveData(CompoundTag p_29478_) {
-        super.readAdditionalSaveData(p_29478_);
-        this.steering.readAdditionalSaveData(p_29478_);
-        this.readPersistentAngerSaveData(this.level, p_29478_); //Anger
-       /* this.setChest(p_29478_.getBoolean("ChestedHorse")); //Container
+    @Override
+    public void readAdditionalSaveData(CompoundTag tag) {
+        super.readAdditionalSaveData(tag);
+        this.steering.readAdditionalSaveData(tag);
+        this.readPersistentAngerSaveData(this.level, tag); //Anger
+        this.setChest(tag.getBoolean("ChestedSnail")); //Container
         this.createInventory();
         if (this.hasChest()) {
-            ListTag listtag = p_29478_.getList("Items", 10);
+            ListTag listtag = tag.getList("Items", 10);
 
             for (int i = 0; i < listtag.size(); ++i) {
                 CompoundTag compoundtag = listtag.getCompound(i);
@@ -310,11 +304,52 @@ public class SnailEntity extends Animal implements ItemSteerable, Saddleable, IA
                 }
             }
         }
-        this.updateContainerEquipment();*/
+        this.updateContainerEquipment();
     }
-
+    @Override
     public InteractionResult mobInteract(Player player, InteractionHand interactionHand) {
+        ItemStack itemstack = player.getItemInHand(interactionHand);
+        if (!this.isBaby()) {
+            if (player.isSecondaryUseActive()) {
+                this.openCustomInventoryScreen(player);
+                return InteractionResult.sidedSuccess(this.level.isClientSide);
+            }
 
+            if (this.isVehicle()) {
+                return super.mobInteract(player, interactionHand);
+            }
+        }
+
+        if (!itemstack.isEmpty()) {
+            if (this.isFood(itemstack)) {
+                return this.fedFood(player, itemstack);
+            }
+
+            if (!this.hasChest() && itemstack.is(Blocks.CHEST.asItem())) {
+                this.setChest(true);
+                this.playChestEquipsSound();
+                if (!player.getAbilities().instabuild) {
+                    itemstack.shrink(1);
+                }
+
+                this.createInventory();
+                return InteractionResult.sidedSuccess(this.level.isClientSide);
+            }
+
+            if (!this.isBaby() && !this.isSaddled() && itemstack.is(Items.SADDLE)) {
+                this.openCustomInventoryScreen(player);
+                return InteractionResult.sidedSuccess(this.level.isClientSide);
+            }
+        }
+
+        if (this.isBaby()) {
+            return super.mobInteract(player, interactionHand);
+        } else {
+            this.doPlayerRide(player);
+            return InteractionResult.sidedSuccess(this.level.isClientSide);
+        }
+    }
+/*
         boolean flag = this.isFood(player.getItemInHand(interactionHand));
         if (!flag && this.isSaddled() && !this.isVehicle() && !player.isSecondaryUseActive()) {
             if (!this.level.isClientSide) {
@@ -330,32 +365,31 @@ public class SnailEntity extends Animal implements ItemSteerable, Saddleable, IA
             } else {
                 return interactionresult;
             }
-        }
-    }
-
+        }*/
+@Override
     public boolean isSaddleable() {
         return this.isAlive() && !this.isBaby();
     }
-
+    @Override
     protected void dropEquipment() {
         super.dropEquipment();
         if (this.isSaddled()) {
             this.spawnAtLocation(Items.SADDLE);
         }
-        /*if (this.hasChest()) { //Container
+        if (this.hasChest()) { //Container
             if (!this.level.isClientSide) {
                 this.spawnAtLocation(Blocks.CHEST);
             }
 
             this.setChest(false);
-        } */
+        }
 
     }
-
+    @Override
     public boolean isSaddled() {
         return this.steering.hasSaddle();
     }
-
+    @Override
     public void equipSaddle(@Nullable SoundSource p_29476_) {
         this.steering.setSaddle(true);
         if (p_29476_ != null) {
@@ -364,7 +398,7 @@ public class SnailEntity extends Animal implements ItemSteerable, Saddleable, IA
 
     }
 
-    //
+    @Override
     public void positionRider(Entity p_30830_) {
         if (this.hasPassenger(p_30830_)) {
             float f = Mth.cos(this.yBodyRot * ((float) Math.PI / 180F));
@@ -373,12 +407,12 @@ public class SnailEntity extends Animal implements ItemSteerable, Saddleable, IA
                     this.getY() + this.getPassengersRidingOffset() + p_30830_.getMyRidingOffset(), this.getZ() - (double) (-2.5F * f));
         }
     }
-
+    @Override
     public double getPassengersRidingOffset() {
         return (double) this.getBbHeight() * 1F;
     }
 
-
+    @Override
     public boolean causeFallDamage(float p_149538_, float p_149539_, DamageSource p_149540_) {
         int i = this.calculateFallDamage(p_149538_, p_149539_);
         if (i <= 0) {
@@ -398,7 +432,7 @@ public class SnailEntity extends Animal implements ItemSteerable, Saddleable, IA
         }
     }
 
-
+    @Override
     public Vec3 getDismountLocationForPassenger(LivingEntity p_33908_) {
         Vec3[] avec3 = new Vec3[]{getCollisionHorizontalEscapeVector((double) this.getBbWidth(), (double) p_33908_.getBbWidth(), p_33908_.getYRot()), getCollisionHorizontalEscapeVector((double) this.getBbWidth(), (double) p_33908_.getBbWidth(), p_33908_.getYRot() - 22.5F), getCollisionHorizontalEscapeVector((double) this.getBbWidth(), (double) p_33908_.getBbWidth(), p_33908_.getYRot() + 22.5F), getCollisionHorizontalEscapeVector((double) this.getBbWidth(), (double) p_33908_.getBbWidth(), p_33908_.getYRot() - 45.0F), getCollisionHorizontalEscapeVector((double) this.getBbWidth(), (double) p_33908_.getBbWidth(), p_33908_.getYRot() + 45.0F)};
         Set<BlockPos> set = Sets.newLinkedHashSet();
@@ -440,32 +474,32 @@ public class SnailEntity extends Animal implements ItemSteerable, Saddleable, IA
     protected float getStandingEyeHeight(Pose pose, EntityDimensions dimensions) {
         return 3.4F;
     }
-
+    @Override
     public Vec3 getLeashOffset() {
         return new Vec3(0.1D, (double) (0.3F * this.getEyeHeight()), (double) (this.getBbWidth() * 0.3F));
     }
-
+    @Override
     public int getExperienceReward() {
         return 1 + this.level.random.nextInt(20);
     }
 
-
+    @Override
     public void travel(Vec3 p_29506_) {
         this.travel(this, this.steering, p_29506_);
     }
-
+    @Override
     public boolean isFood(ItemStack p_29508_) {
         return FOOD_ITEMS.test(p_29508_);
     }
-
+    @Override
     public float getSteeringSpeed() {
         return (float) this.getAttributeValue(Attributes.MOVEMENT_SPEED) * 0.225F;
     }
-
+    @Override
     public void travelWithInput(Vec3 p_29482_) {
         super.travel(p_29482_);
     }
-
+    @Override
     public boolean boost() {
         return this.steering.boost(this.getRandom());
     }
@@ -487,30 +521,34 @@ public class SnailEntity extends Animal implements ItemSteerable, Saddleable, IA
         return tickCount;
     }
 
-
-    protected void playStepSound(BlockPos pos, BlockState blockIn) {
+    @Override
+    public void playStepSound(BlockPos pos, BlockState blockIn) {
         this.playSound(SoundEvents.SLIME_BLOCK_STEP, 0.15F, 1.0F);
     }
-
-    protected SoundEvent getAmbientSound() {
+    @Override
+    public SoundEvent getAmbientSound() {
         return SoundEvents.SLIME_BLOCK_FALL;
     }
 
-    protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
+    @Override
+    public SoundEvent getHurtSound(DamageSource damageSourceIn) {
         return SoundEvents.SLIME_HURT;
     }
 
-    protected SoundEvent getDeathSound() {
+    @Override
+    public SoundEvent getDeathSound() {
         return SoundEvents.SLIME_DEATH;
     }
 
-    protected float getSoundVolume() {
+    @Override
+    public float getSoundVolume() {
         return 0.2F;
     }
 
 //Climbing
 
-    protected PathNavigation createNavigation(Level p_33802_) {
+    @Override
+    public PathNavigation createNavigation(Level p_33802_) {
         return new WallClimberNavigation(this, p_33802_);
     }
 
@@ -530,13 +568,13 @@ public class SnailEntity extends Animal implements ItemSteerable, Saddleable, IA
     }
 
     //Thunder Hit
-
+    @Override
     public void thunderHit(ServerLevel p_35409_, LightningBolt p_35410_) {
         addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 1440, 60));
         super.thunderHit(p_35409_, p_35410_);
     }
     //Thunder HIt
-
+    @Override
     public void aiStep() {
         super.aiStep();
         if (!this.level.isClientSide) {
@@ -549,7 +587,7 @@ public class SnailEntity extends Animal implements ItemSteerable, Saddleable, IA
                 this.hurt(DamageSource.ON_FIRE, 1.0F);
             }
 
-            if (!net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.level, this)) {
+            if (!ForgeEventFactory.getMobGriefingEvent(this.level, this)) {
                 return;
             }
 
@@ -567,6 +605,58 @@ public class SnailEntity extends Animal implements ItemSteerable, Saddleable, IA
             }
         }
     }
+
+    //container
+    @Override
+    public boolean hasChest() {
+        return this.entityData.get(DATA_ID_CHEST);
+    }
+    @Override
+    public void setChest(boolean p_30505_) {
+        this.entityData.set(DATA_ID_CHEST, p_30505_);
+    }
+    @Override
+    protected int getInventorySize() {
+        return this.hasChest() ? 17 : super.getInventorySize();
+    }
+    @Override
+    public SlotAccess getSlot(int pSlot) {
+        return pSlot == 499 ? new SlotAccess() {
+            public ItemStack get() {
+                return SnailEntity.this.hasChest() ? new ItemStack(Items.CHEST) : ItemStack.EMPTY;
+            }
+
+            public boolean set(ItemStack itemStack) {
+                if (itemStack.isEmpty()) {
+                    if (SnailEntity.this.hasChest()) {
+                        SnailEntity.this.setChest(false);
+                        SnailEntity.this.createInventory();
+                    }
+
+                    return true;
+                } else if (itemStack.is(Items.CHEST)) {
+                    if (!SnailEntity.this.hasChest()) {
+                        SnailEntity.this.setChest(true);
+                        SnailEntity.this.createInventory();
+                    }
+
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        } : super.getSlot(pSlot);
+    }
+    @Override
+    protected void playChestEquipsSound() {
+        this.playSound(SoundEvents.DONKEY_CHEST, 1.0F, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
+    }
+    @Override
+    public int getInventoryColumns() {
+        return 5;
+    }
+
+
     //Ende
 
     //SchneckenHaus
@@ -616,60 +706,6 @@ public class SnailEntity extends Animal implements ItemSteerable, Saddleable, IA
 */
 }
 
-
-
-
-
-
-
-    /*container
-    public boolean hasChest() {
-        return this.entityData.get(DATA_ID_CHEST);
-    }
-
-    public void setChest(boolean p_30505_) {
-        this.entityData.set(DATA_ID_CHEST, p_30505_);
-    }
-
-    protected int getInventorySize() {
-        return this.hasChest() ? 17 : super.getInventorySize();
-    }
-
-    public SlotAccess getSlot(int p_149479_) {
-        return p_149479_ == 499 ? new SlotAccess() {
-            public ItemStack get() {
-                return SnailEntity.this.hasChest() ? new ItemStack(Items.CHEST) : ItemStack.EMPTY;
-            }
-
-            public boolean set(ItemStack p_149485_) {
-                if (p_149485_.isEmpty()) {
-                    if (SnailEntity.this.hasChest()) {
-                        SnailEntity.this.setChest(false);
-                        SnailEntity.this.createInventory();
-                    }
-
-                    return true;
-                } else if (p_149485_.is(Items.CHEST)) {
-                    if (!SnailEntity.this.hasChest()) {
-                        SnailEntity.this.setChest(true);
-                        SnailEntity.this.createInventory();
-                    }
-
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-        } : super.getSlot(p_149479_);
-    }
-
-    protected void playChestEquipsSound() {
-        this.playSound(SoundEvents.DONKEY_CHEST, 1.0F, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
-    }
-
-    public int getInventoryColumns() {
-        return 5;
-    }  */
     //Taming
 /*
     @Override
