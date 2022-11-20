@@ -1,50 +1,47 @@
 package net.liddingen.lidmod.screen;
 
-/*
+
+import net.liddingen.lidmod.entity.custom.SnailEntity;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.animal.horse.AbstractChestedHorse;
-import net.minecraft.world.entity.animal.horse.AbstractHorse;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 public class SnailInventoryMenu extends AbstractContainerMenu {
-    private final Container horseContainer;
-    private final AbstractHorse horse;
+    private final Container snailContainer;
+    private final SnailEntity snail;
 
-
-
-    public SnailInventoryMenu(int pContainerId, Inventory pPlayerInventory, Container pContainer, final AbstractHorse pHorse) {
-        super(ModMenuTypes.SAIL_MENU.get(), pContainerId);
-        this.horseContainer = pContainer;
-        this.horse = pHorse;
+    public SnailInventoryMenu(int pContainerId, Inventory pPlayerInventory, Container pContainer, final SnailEntity pSnail) {
+        super(ModMenuTypes.SNAIL_MENU.get(), pContainerId);
+        this.snailContainer = pContainer;
+        this.snail = pSnail;
         int i = 3;
         pContainer.startOpen(pPlayerInventory.player);
         int j = -18;
         this.addSlot(new Slot(pContainer, 0, 8, 18) {
 
             public boolean mayPlace(ItemStack p_39677_) {
-                return p_39677_.is(Items.SADDLE) && !this.hasItem() && pHorse.isSaddleable();
+                return p_39677_.is(Items.SADDLE) && !this.hasItem() && pSnail.isSaddleable();
             }
 
 
             public boolean isActive() {
-                return pHorse.isSaddleable();
+                return pSnail.isSaddleable();
             }
         });
         this.addSlot(new Slot(pContainer, 1, 8, 36) {
 
             public boolean mayPlace(ItemStack p_39690_) {
-                return pHorse.isArmor(p_39690_);
+                return pSnail.isArmor(p_39690_);
             }
 
 
             public boolean isActive() {
-                return pHorse.canWearArmor();
+                return pSnail.canWearArmor();
             }
 
 
@@ -52,10 +49,10 @@ public class SnailInventoryMenu extends AbstractContainerMenu {
                 return 1;
             }
         });
-        if (this.hasChest(pHorse)) {
+        if (this.hasChest(pSnail)) {
             for(int k = 0; k < 3; ++k) {
-                for(int l = 0; l < ((AbstractChestedHorse)pHorse).getInventoryColumns(); ++l) {
-                    this.addSlot(new Slot(pContainer, 2 + l + k * ((AbstractChestedHorse)pHorse).getInventoryColumns(), 80 + l * 18, 18 + k * 18));
+                for(int l = 0; l < ((AbstractChestedHorse)pSnail).getInventoryColumns(); ++l) {
+                    this.addSlot(new Slot(pContainer, 2 + l + k * ((AbstractChestedHorse)pSnail).getInventoryColumns(), 80 + l * 18, 18 + k * 18));
                 }
             }
         }
@@ -72,12 +69,13 @@ public class SnailInventoryMenu extends AbstractContainerMenu {
 
     }
 
+
     public boolean stillValid(Player pPlayer) {
-        return !this.horse.hasInventoryChanged(this.horseContainer) && this.horseContainer.stillValid(pPlayer) && this.horse.isAlive() && this.horse.distanceTo(pPlayer) < 8.0F;
+        return !this.snail.hasInventoryChanged(this.snailContainer) && this.snailContainer.stillValid(pPlayer) && this.snail.isAlive() && this.snail.distanceTo(pPlayer) < 8.0F;
     }
 
-    private boolean hasChest(AbstractHorse pHorse) {
-        return pHorse instanceof AbstractChestedHorse && ((AbstractChestedHorse)pHorse).hasChest();
+    private boolean hasChest(SnailEntity pSnail) {
+        return pSnail.hasChest();
     }
 
     public ItemStack quickMoveStack(Player pPlayer, int pIndex) {
@@ -86,7 +84,7 @@ public class SnailInventoryMenu extends AbstractContainerMenu {
         if (slot != null && slot.hasItem()) {
             ItemStack itemstack1 = slot.getItem();
             itemstack = itemstack1.copy();
-            int i = this.horseContainer.getContainerSize();
+            int i = this.snailContainer.getContainerSize();
             if (pIndex < i) {
                 if (!this.moveItemStackTo(itemstack1, i, this.slots.size(), true)) {
                     return ItemStack.EMPTY;
@@ -129,6 +127,6 @@ public class SnailInventoryMenu extends AbstractContainerMenu {
 
     public void removed(Player pPlayer) {
         super.removed(pPlayer);
-        this.horseContainer.stopOpen(pPlayer);
+        this.snailContainer.stopOpen(pPlayer);
     }
-}*/
+}

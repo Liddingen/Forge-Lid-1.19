@@ -12,9 +12,9 @@ public class ModBlockEntities {
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES =
             DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, LidMod.MOD_ID);
 
-    public static final RegistryObject<BlockEntityType<NetheriteFrameEntity>> NETHERITE_FRAME
+    public static final RegistryObject<BlockEntityType<SnailEntity>> NETHERITE_FRAME
             = BLOCK_ENTITIES.register("netherite_frame", () ->
-            BlockEntityType.Builder.of(NetheriteFrameEntity::new, ModBlocks.NETHERITE_FRAME.get()).build(null));
+            BlockEntityType.Builder.of(SnailEntity::new, ModBlocks.NETHERITE_FRAME.get()).build(null));
 
     public static final RegistryObject<BlockEntityType<AccumulatorEntity>> ACCUMULATOR
             = BLOCK_ENTITIES.register("accumulator", () ->

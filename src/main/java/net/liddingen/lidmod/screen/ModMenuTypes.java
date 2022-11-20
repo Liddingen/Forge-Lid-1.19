@@ -20,9 +20,8 @@ public class ModMenuTypes {
     public static final RegistryObject<MenuType<NetheriteFrameMenu>> NETHERITE_FRAME_MENU =
             registerMenuType(NetheriteFrameMenu::new, "netherite_frane_menu");
 
-   /* public static final RegistryObject<MenuType<SnailInventoryMenu>> SAIL_MENU =
-            registerMenuType(SnailInventoryMenu::new, "snail_menu");*/
-
+    public static final RegistryObject<MenuType<SnailInventoryMenu>> SNAIL_MENU =
+            registerMenuType(SnailInventoryMenu::new, "snail_menu");
 
     private static <T extends AbstractContainerMenu> RegistryObject<MenuType<T>> registerMenuType(IContainerFactory<T> factory,
                                                                                                   String name) {
