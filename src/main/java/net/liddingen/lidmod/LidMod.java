@@ -14,7 +14,7 @@ import net.liddingen.lidmod.painting.ModPaintings;
 import net.liddingen.lidmod.screen.AccumulatorScreen;
 import net.liddingen.lidmod.screen.ModMenuTypes;
 import net.liddingen.lidmod.screen.NetheriteFrameScreen;
-import net.liddingen.lidmod.screen.SnailInventoryScreen;
+//import net.liddingen.lidmod.screen.SnailInventoryScreen;
 import net.liddingen.lidmod.villager.ModVillagers;
 import net.liddingen.lidmod.world.feature.ModConfiguredFeatures;
 import net.liddingen.lidmod.world.feature.ModPlacedFeatures;
@@ -81,7 +81,7 @@ public class LidMod {
         public static void onClientSetup(FMLClientSetupEvent event) {
             MenuScreens.register(ModMenuTypes.ACCUMULATOR_MENU.get(), AccumulatorScreen::new);
             MenuScreens.register(ModMenuTypes.NETHERITE_FRAME_MENU.get(), NetheriteFrameScreen::new);
-            MenuScreens.register(ModMenuTypes.SNAIL_MENU.get(), SnailInventoryScreen::new);
+           // MenuScreens.register(ModMenuTypes.SNAIL_MENU.get(), SnailInventoryScreen::new);
 
             EntityRenderers.register(ModEntityTypes.SNAIL.get(), SnailRenderer::new);
             EntityRenderers.register(ModEntityTypes.SNAILY.get(), SnailyRenderer::new);

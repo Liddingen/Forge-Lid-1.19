@@ -269,7 +269,7 @@ public class SnailEntity extends AbstractChestedHorse implements ItemSteerable, 
         super.addAdditionalSaveData(tag);
         this.steering.addAdditionalSaveData(tag);
         this.addPersistentAngerSaveData(tag); //Anger
-        tag.putBoolean("ChestedHorse", this.hasChest()); //Container
+        tag.putBoolean("ChestedSnail", this.hasChest()); //Container
         if (this.hasChest()) { //Container
             ListTag listtag = new ListTag();
 
@@ -612,8 +612,8 @@ public class SnailEntity extends AbstractChestedHorse implements ItemSteerable, 
         return this.entityData.get(DATA_ID_CHEST);
     }
     @Override
-    public void setChest(boolean p_30505_) {
-        this.entityData.set(DATA_ID_CHEST, p_30505_);
+    public void setChest(boolean pChested) {
+        this.entityData.set(DATA_ID_CHEST, pChested);
     }
     @Override
     protected int getInventorySize() {

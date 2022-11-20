@@ -1,6 +1,6 @@
 package net.liddingen.lidmod.screen;
 
-
+/*
 import net.liddingen.lidmod.entity.custom.SnailEntity;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.animal.horse.AbstractChestedHorse;
@@ -129,4 +129,4 @@ public class SnailInventoryMenu extends AbstractContainerMenu {
         super.removed(pPlayer);
         this.snailContainer.stopOpen(pPlayer);
     }
-}
+}*/

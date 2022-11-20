@@ -6,6 +6,7 @@ import net.liddingen.lidmod.LidMod;
 import net.liddingen.lidmod.entity.custom.SnailEntity;
 import net.liddingen.lidmod.entity.layers.SnailChestLayer;
 import net.liddingen.lidmod.entity.layers.SnailSaddleLayer;
+import net.liddingen.lidmod.entity.layers.SnailSwagLayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -24,6 +25,7 @@ public class SnailRenderer extends GeoEntityRenderer<SnailEntity> {
 
         addLayer(new SnailSaddleLayer(this));
         addLayer(new SnailChestLayer(this));
+        addLayer(new SnailSwagLayer(this));
 
        }
     @Override
