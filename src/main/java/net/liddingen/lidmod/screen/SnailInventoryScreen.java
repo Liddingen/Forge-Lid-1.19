@@ -1,6 +1,5 @@
 package net.liddingen.lidmod.screen;
 
-/*
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.liddingen.lidmod.LidMod;
@@ -10,12 +9,9 @@ import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class SnailInventoryScreen extends AbstractContainerScreen<SnailInventoryMenu> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation(LidMod.MOD_ID,"textures/gui/accumulator_gui.png");
+    private static final ResourceLocation TEXTURE = new ResourceLocation(LidMod.MOD_ID,"textures/gui/snail_gui.png");
 
     private final SnailEntity snail;
 
@@ -28,7 +24,7 @@ public class SnailInventoryScreen extends AbstractContainerScreen<SnailInventory
         this.snail = pSnail;
         this.passEvents = false;
     }
-
+    @Override
     protected void renderBg(PoseStack pPoseStack, float pPartialTick, int pX, int pY) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
@@ -48,7 +44,7 @@ public class SnailInventoryScreen extends AbstractContainerScreen<SnailInventory
         }
         InventoryScreen.renderEntityInInventory(i + 51, j + 60, 17, (float)(i + 51) - this.xMouse, (float)(j + 75 - 50) - this.yMouse, this.snail);
     }
-
+    @Override
     public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
         this.renderBackground(pPoseStack);
         this.xMouse = (float)pMouseX;
@@ -56,4 +52,4 @@ public class SnailInventoryScreen extends AbstractContainerScreen<SnailInventory
         super.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
         this.renderTooltip(pPoseStack, pMouseX, pMouseY);
     }
-}*/
+}

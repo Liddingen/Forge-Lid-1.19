@@ -1,6 +1,6 @@
 package net.liddingen.lidmod.screen;
 
-/*
+
 import net.liddingen.lidmod.entity.custom.SnailEntity;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.animal.horse.AbstractChestedHorse;
@@ -69,7 +69,7 @@ public class SnailInventoryMenu extends AbstractContainerMenu {
 
     }
 
-
+    @Override
     public boolean stillValid(Player pPlayer) {
         return !this.snail.hasInventoryChanged(this.snailContainer) && this.snailContainer.stillValid(pPlayer) && this.snail.isAlive() && this.snail.distanceTo(pPlayer) < 8.0F;
     }
@@ -78,6 +78,7 @@ public class SnailInventoryMenu extends AbstractContainerMenu {
         return pSnail.hasChest();
     }
 
+    @Override
     public ItemStack quickMoveStack(Player pPlayer, int pIndex) {
         ItemStack itemstack = ItemStack.EMPTY;
         Slot slot = this.slots.get(pIndex);
@@ -129,4 +130,4 @@ public class SnailInventoryMenu extends AbstractContainerMenu {
         super.removed(pPlayer);
         this.snailContainer.stopOpen(pPlayer);
     }
-}*/
+}
