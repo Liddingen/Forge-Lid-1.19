@@ -49,6 +49,10 @@ public static final RegistryObject<Block> ELEKTRUM_BLOCK = registerBlock("elektr
                     .strength(5f).requiresCorrectToolForDrops()
                     .lightLevel(state -> state.getValue(ToggleableRedstoneLampBlock.LIT) ? 15 : 0)), ModCreativeModeTab.LID_TAB);
 
+    public static final RegistryObject<Block> SnailEgg = registerBlock("snail_egg",
+            () -> new SnailEgg(BlockBehaviour.Properties.of(Material.EGG)
+                    .strength(5f).requiresCorrectToolForDrops().noOcclusion()), ModCreativeModeTab.LID_TAB);
+
 //3D Models
     public static final RegistryObject<Block> NETHERITE_FRAME = registerBlock("netherite_frame",
             () -> new NetheriteFrame(BlockBehaviour.Properties.of(Material.HEAVY_METAL)

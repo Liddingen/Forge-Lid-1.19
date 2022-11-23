@@ -1,5 +1,5 @@
 package net.liddingen.lidmod.screen;
-
+/*
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.liddingen.lidmod.LidMod;
@@ -52,4 +52,4 @@ public class SnailInventoryScreen extends AbstractContainerScreen<SnailInventory
         super.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
         this.renderTooltip(pPoseStack, pMouseX, pMouseY);
     }
-}
+}*/

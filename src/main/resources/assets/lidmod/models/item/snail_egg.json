@@ -1,0 +1,6 @@
+{
+  "parent": "lidmod:item/generated",
+  "textures": {
+    "layer0": "lidmod:block/snail_egg"
+  }
+}
