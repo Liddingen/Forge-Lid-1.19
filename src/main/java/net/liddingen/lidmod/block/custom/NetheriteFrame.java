@@ -1,6 +1,7 @@
 package net.liddingen.lidmod.block.custom;
 
-import net.liddingen.lidmod.block.entity.SnailEntity;
+
+import net.liddingen.lidmod.block.entity.NetheriteFrameEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -68,8 +69,8 @@ public class NetheriteFrame extends BaseEntityBlock {
     public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
         if (pState.getBlock() != pNewState.getBlock()) {
             BlockEntity blockEntity = pLevel.getBlockEntity(pPos);
-            if (blockEntity instanceof SnailEntity) {
-                ((SnailEntity) blockEntity).drops();
+            if (blockEntity instanceof NetheriteFrameEntity) {
+                ((NetheriteFrameEntity) blockEntity).drops();
             }
         }
         super.onRemove(pState, pLevel, pPos, pNewState, pIsMoving);
@@ -80,8 +81,8 @@ public class NetheriteFrame extends BaseEntityBlock {
                                  Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
         if (!pLevel.isClientSide()) {
             BlockEntity entity = pLevel.getBlockEntity(pPos);
-            if (entity instanceof SnailEntity) {
-                NetworkHooks.openScreen(((ServerPlayer) pPlayer), (SnailEntity) entity, pPos);
+            if (entity instanceof NetheriteFrameEntity) {
+                NetworkHooks.openScreen(((ServerPlayer) pPlayer), (NetheriteFrameEntity) entity, pPos);
             } else {
                 throw new IllegalStateException("Our Container provider is missing!");
             }
@@ -94,7 +95,7 @@ public class NetheriteFrame extends BaseEntityBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new SnailEntity(pos, state);
+        return new NetheriteFrameEntity(pos, state);
     }
 /*
     @Nullable

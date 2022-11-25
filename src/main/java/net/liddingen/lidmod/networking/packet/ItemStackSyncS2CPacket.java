@@ -1,6 +1,7 @@
 package net.liddingen.lidmod.networking.packet;
 
-import net.liddingen.lidmod.block.entity.SnailEntity;
+
+import net.liddingen.lidmod.block.entity.NetheriteFrameEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -45,7 +46,7 @@ public class ItemStackSyncS2CPacket {
     public boolean handle(Supplier<NetworkEvent.Context> supplier) {
         NetworkEvent.Context context = supplier.get();
         context.enqueueWork(() -> {
-            if(Minecraft.getInstance().level.getBlockEntity(pos) instanceof SnailEntity blockEntity) {
+            if(Minecraft.getInstance().level.getBlockEntity(pos) instanceof NetheriteFrameEntity blockEntity) {
                 blockEntity.setHandler(this.itemStackHandler);
             }
         });

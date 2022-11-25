@@ -2,6 +2,7 @@ package net.liddingen.lidmod.entity.custom;
 
 import net.liddingen.lidmod.entity.ModEntityTypes;
 import net.liddingen.lidmod.item.ModItems;
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
@@ -9,11 +10,15 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.stats.Stats;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
+import net.minecraft.util.Unit;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -26,10 +31,8 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
-import net.minecraft.world.entity.animal.Animal;
-import net.minecraft.world.entity.animal.Bucketable;
-import net.minecraft.world.entity.animal.FrogVariant;
-import net.minecraft.world.entity.animal.MushroomCow;
+import net.minecraft.world.entity.ai.memory.MemoryModuleType;
+import net.minecraft.world.entity.animal.*;
 import net.minecraft.world.entity.animal.axolotl.Axolotl;
 import net.minecraft.world.entity.animal.frog.Frog;
 import net.minecraft.world.entity.animal.frog.FrogAi;
@@ -37,12 +40,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.*;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.BedBlock;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.TurtleEggBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib3.core.AnimationState;
@@ -60,6 +62,12 @@ import software.bernie.geckolib3.util.GeckoLibUtil;
 import java.util.UUID;
 
 public class SnailyEntity extends Animal implements IAnimatable, IAnimationTickable, Bucketable{
+    //Breeding
+    private static final EntityDataAccessor<Boolean> HAS_EGG = SynchedEntityData.defineId(Turtle.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> LAYING_EGG = SynchedEntityData.defineId(Turtle.class, EntityDataSerializers.BOOLEAN);
+    int layEggCounter;
+    //Breeding
+
     //Converting
     @Nullable
     private UUID conversionStarter;
@@ -97,6 +105,7 @@ public class SnailyEntity extends Animal implements IAnimatable, IAnimationTicka
         this.goalSelector.addGoal(1, new TemptGoal(this, 1.25D, Ingredient.of(Items.ENCHANTED_GOLDEN_APPLE), false));
         this.goalSelector.addGoal(2, new PanicGoal(this, 2.0D));
         this.goalSelector.addGoal(3, new BreedGoal(this, 1.0D));
+        this.goalSelector.addGoal(1, new SnailyEntity.SnailLayEggGoal(this, 1.0D));
         this.goalSelector.addGoal(4, new MeleeAttackGoal(this, 1.2D, false));
         this.goalSelector.addGoal(5, new FollowParentGoal(this, 1.25D));
         this.goalSelector.addGoal(6, new WaterAvoidingRandomStrollGoal(this, 1.0D));
@@ -147,11 +156,6 @@ public class SnailyEntity extends Animal implements IAnimatable, IAnimationTicka
         return FOOD_ITEMS.test(p_29508_);
     }
 
-    @Nullable
-    @Override
-    public AgeableMob getBreedOffspring(ServerLevel serverLevel, AgeableMob mob) {
-        return ModEntityTypes.SNAILY.get().create(serverLevel);
-    }
     /*
     @Nullable
     @Override
@@ -195,6 +199,8 @@ public class SnailyEntity extends Animal implements IAnimatable, IAnimationTicka
 
     protected void defineSynchedData() {
         super.defineSynchedData();
+        this.entityData.define(HAS_EGG, false);
+        this.entityData.define(LAYING_EGG, false);
         this.entityData.define(DATA_CONVERTING_ID, false);
         this.entityData.define(FROM_BUCKET, false);
     }
@@ -207,6 +213,7 @@ public class SnailyEntity extends Animal implements IAnimatable, IAnimationTicka
             tag.putUUID("ConversionPlayer", this.conversionStarter);
         }
         tag.putInt("Xp", this.snailXp);
+        tag.putBoolean("HasEgg", this.hasEgg());
     }
 
     public void readAdditionalSaveData(CompoundTag tag) {
@@ -220,6 +227,7 @@ public class SnailyEntity extends Animal implements IAnimatable, IAnimationTicka
         if (tag.contains("Xp", 3)) {
             this.snailXp = tag.getInt("Xp");
         }
+        this.setHasEgg(tag.getBoolean("HasEgg"));
     }
 
     public void tick() {
@@ -371,6 +379,126 @@ public class SnailyEntity extends Animal implements IAnimatable, IAnimationTicka
     public boolean requiresCustomPersistence() {
         return super.requiresCustomPersistence() || this.fromBucket();
     }
+
+    //breeding
+   /* @Nullable
+    @Override
+    public AgeableMob getBreedOffspring(ServerLevel serverLevel, AgeableMob mob) {
+        return ModEntityTypes.SNAILY.get().create(serverLevel);
+    }*/
+
+    public boolean hasEgg() {
+        return this.entityData.get(HAS_EGG);
+    }
+
+    void setHasEgg(boolean pHasEgg) {
+        this.entityData.set(HAS_EGG, pHasEgg);
+    }
+
+    public boolean isLayingEgg() {
+        return this.entityData.get(LAYING_EGG);
+    }
+
+    void setLayingEgg(boolean pIsLayingEgg) {
+        this.layEggCounter = pIsLayingEgg ? 1 : 0;
+        this.entityData.set(LAYING_EGG, pIsLayingEgg);
+    }
+    @Nullable
+    @Override
+    public AgeableMob getBreedOffspring(ServerLevel pLevel, AgeableMob pOtherParent) {
+        SnailyEntity snaily = ModEntityTypes.SNAILY.get().create(pLevel);
+        /*if (snaily != null) {
+            FrogAi.initMemories(snaily, pLevel.getRandom());
+        }*/
+
+        return snaily;
+    }
+
+    public boolean isBaby() {
+        return false;
+    }
+
+    public void setBaby(boolean pBaby) {
+    }
+
+    public void spawnChildFromBreeding(ServerLevel pLevel, Animal pMate) {
+        ServerPlayer serverplayer = this.getLoveCause();
+        if (serverplayer == null) {
+            serverplayer = pMate.getLoveCause();
+        }
+
+        if (serverplayer != null) {
+            serverplayer.awardStat(Stats.ANIMALS_BRED);
+            CriteriaTriggers.BRED_ANIMALS.trigger(serverplayer, this, pMate, (AgeableMob)null);
+        }
+
+        this.setAge(6000);
+        pMate.setAge(6000);
+        this.resetLove();
+        pMate.resetLove();
+        this.getBrain().setMemory(MemoryModuleType.IS_PREGNANT, Unit.INSTANCE);
+        pLevel.broadcastEntityEvent(this, (byte)18);
+        if (pLevel.getGameRules().getBoolean(GameRules.RULE_DOMOBLOOT)) {
+            pLevel.addFreshEntity(new ExperienceOrb(pLevel, this.getX(), this.getY(), this.getZ(), this.getRandom().nextInt(7) + 1));
+        }
+
+    }
+    static class SnailLayEggGoal extends MoveToBlockGoal {
+        private final SnailyEntity snaily;
+
+        SnailLayEggGoal(SnailyEntity pSnaily, double pSpeedModifier) {
+            super(pSnaily, pSpeedModifier, 16);
+            this.snaily = pSnaily;
+        }
+
+        /**
+         * Returns whether execution should begin. You can also read and cache any state necessary for execution in this
+         * method as well.
+         */
+        public boolean canUse() {
+            return this.snaily.hasEgg() ? super.canUse() : false;
+        }
+
+        /**
+         * Returns whether an in-progress EntityAIBase should continue executing
+         */
+        public boolean canContinueToUse() {
+            return super.canContinueToUse() && this.snaily.hasEgg();
+        }
+
+        /**
+         * Keep ticking a continuous task that has already been started
+         */
+        public void tick() {
+            super.tick();
+            BlockPos blockpos = this.snaily.blockPosition();
+            if (!this.snaily.isInWater() && this.isReachedTarget()) {
+                if (this.snaily.layEggCounter < 1) {
+                    this.snaily.setLayingEgg(true);
+                } else if (this.snaily.layEggCounter > this.adjustedTickDelay(200)) {
+                    Level level = this.snaily.level;
+                    level.playSound((Player)null, blockpos, SoundEvents.TURTLE_LAY_EGG, SoundSource.BLOCKS, 0.3F, 0.9F + level.random.nextFloat() * 0.2F);
+                    level.setBlock(this.blockPos.above(), Blocks.TURTLE_EGG.defaultBlockState().setValue(TurtleEggBlock.EGGS, Integer.valueOf(this.snaily.random.nextInt(4) + 1)), 3);
+                    this.snaily.setHasEgg(false);
+                    this.snaily.setLayingEgg(false);
+                    this.snaily.setInLoveTime(600);
+                }
+
+                if (this.snaily.isLayingEgg()) {
+                    ++this.snaily.layEggCounter;
+                }
+            }
+
+        }
+
+        /**
+         * Return true to set given position as destination
+         */
+        protected boolean isValidTarget(LevelReader pLevel, BlockPos pPos) {
+            return !pLevel.isEmptyBlock(pPos.above()) ? false : TurtleEggBlock.isSand(pLevel, pPos);
+        }
+    }
+
 
     /*//Climbing
     public void tick() {

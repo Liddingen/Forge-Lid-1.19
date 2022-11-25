@@ -25,7 +25,7 @@ import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class SnailEntity extends BlockEntity implements MenuProvider {
+public class NetheriteFrameEntity extends BlockEntity implements MenuProvider {
     private final ItemStackHandler itemHandler = new ItemStackHandler(1) {
         @Override
         protected void onContentsChanged(int slot) {
@@ -56,15 +56,15 @@ public class SnailEntity extends BlockEntity implements MenuProvider {
     private int progress = 0;
     private int maxProgress = 78;
 
-    public SnailEntity(BlockPos pos, BlockState state) {
+    public NetheriteFrameEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.NETHERITE_FRAME.get(), pos, state);
         this.data = new ContainerData() {
 
             @Override
             public int get(int index) {
                 return switch (index) {
-                    case 0 -> SnailEntity.this.progress;
-                    case 1 -> SnailEntity.this.maxProgress;
+                    case 0 -> NetheriteFrameEntity.this.progress;
+                    case 1 -> NetheriteFrameEntity.this.maxProgress;
                     default -> 0;
                 };
             }
@@ -72,8 +72,8 @@ public class SnailEntity extends BlockEntity implements MenuProvider {
             @Override
             public void set(int index, int value) {
                 switch (index) {
-                    case 0 -> SnailEntity.this.progress = value;
-                    case 1 -> SnailEntity.this.maxProgress = value;
+                    case 0 -> NetheriteFrameEntity.this.progress = value;
+                    case 1 -> NetheriteFrameEntity.this.maxProgress = value;
                 }
             }
 

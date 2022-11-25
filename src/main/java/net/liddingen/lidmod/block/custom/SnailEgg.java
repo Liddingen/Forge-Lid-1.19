@@ -94,7 +94,7 @@ public class SnailEgg extends FrogspawnBlock {
 
     private void hatchSnailyspawn(ServerLevel level, BlockPos pos, RandomSource source) {
         this.destroyBlock(level, pos);
-        level.playSound((Player)null, pos, SoundEvents.FROGSPAWN_HATCH, SoundSource.BLOCKS, 1.0F, 1.0F);
+        level.playSound((Player)null, pos, SoundEvents.TURTLE_EGG_HATCH, SoundSource.BLOCKS, 1.0F, 1.0F);
         this.spawnSnailys(level, pos, source);
     }
 
@@ -107,6 +107,7 @@ public class SnailEgg extends FrogspawnBlock {
 
         for(int j = 1; j <= i; ++j) {
             SnailyEntity snaily = ModEntityTypes.SNAILY.get().create(p_221221_);
+            snaily.setAge(-24000);
             double d0 = (double)p_221222_.getX() + this.getRandomTadpolePositionOffset(p_221223_);
             double d1 = (double)p_221222_.getZ() + this.getRandomTadpolePositionOffset(p_221223_);
             int k = p_221223_.nextInt(1, 361);

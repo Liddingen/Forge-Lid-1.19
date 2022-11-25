@@ -1,7 +1,7 @@
 package net.liddingen.lidmod.screen;
 
 import net.liddingen.lidmod.block.ModBlocks;
-import net.liddingen.lidmod.block.entity.SnailEntity;
+import net.liddingen.lidmod.block.entity.NetheriteFrameEntity;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -13,7 +13,7 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.SlotItemHandler;
 
 public class NetheriteFrameMenu extends AbstractContainerMenu {
-    public final SnailEntity blockEntity;
+    public final NetheriteFrameEntity blockEntity;
     private final Level level;
     private final ContainerData data;
 
@@ -24,7 +24,7 @@ public class NetheriteFrameMenu extends AbstractContainerMenu {
     public NetheriteFrameMenu(int id, Inventory inv, BlockEntity entity, ContainerData data) {
         super(ModMenuTypes.NETHERITE_FRAME_MENU.get(), id);
         checkContainerSize(inv, 1);
-        blockEntity = (SnailEntity) entity;
+        blockEntity = (NetheriteFrameEntity) entity;
         this.level = inv.player.level;
         this.data = data;
 
